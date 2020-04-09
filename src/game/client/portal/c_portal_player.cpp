@@ -26,7 +26,7 @@
 
 // Don't alias here
 #if defined( CPortal_Player )
-#undef CPortal_Player
+#undef CPortal_Player	
 #endif
 
 
@@ -40,7 +40,7 @@
 #define DEATH_CC_FADE_SPEED 0.05f
 
 
-ConVar cl_reorient_in_air("cl_reorient_in_air", "1", FCVAR_ARCHIVE, "Allows the player to only reorient from being upside down while in the air." );
+ConVar cl_reorient_in_air("cl_reorient_in_air", "1", FCVAR_ARCHIVE, "Allows the player to only reorient from being upside down while in the air." ); 
 
 
 // -------------------------------------------------------------------------------- //
@@ -60,7 +60,7 @@ public:
 		if ( pPlayer && !pPlayer->IsDormant() )
 		{
 			pPlayer->DoAnimationEvent( (PlayerAnimEvent_t)m_iEvent.Get(), m_nData );
-		}
+		}	
 	}
 
 public:
@@ -125,8 +125,8 @@ END_RECV_TABLE()
 
 
 //-----------------------------------------------------------------------------
-// Purpose:
-// Input  :  -
+// Purpose: 
+// Input  :  - 
 //-----------------------------------------------------------------------------
 C_PortalRagdoll::C_PortalRagdoll()
 {
@@ -134,18 +134,19 @@ C_PortalRagdoll::C_PortalRagdoll()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose:
-// Input  :  -
+// Purpose: 
+// Input  :  - 
 //-----------------------------------------------------------------------------
 C_PortalRagdoll::~C_PortalRagdoll()
 {
+	( this );
 }
 
 
 
 //-----------------------------------------------------------------------------
-// Purpose:
-// Input  : *pSourceEntity -
+// Purpose: 
+// Input  : *pSourceEntity - 
 //-----------------------------------------------------------------------------
 void C_PortalRagdoll::Interp_Copy( C_BaseAnimatingOverlay *pSourceEntity )
 {
@@ -189,8 +190,8 @@ void C_PortalRagdoll::SetupWeights( const matrix3x4_t *pBoneToWorld, int nFlexWe
 
 
 //-----------------------------------------------------------------------------
-// Purpose:
-// Input  :  -
+// Purpose: 
+// Input  :  - 
 //-----------------------------------------------------------------------------
 void C_PortalRagdoll::CreatePortalRagdoll()
 {
@@ -207,7 +208,7 @@ void C_PortalRagdoll::CreatePortalRagdoll()
 
 		// This is the local player, so set them in a default
 		// pose and slam their velocity, angles and origin
-		SetAbsOrigin( /* m_vecRagdollOrigin : */ pPlayer->GetRenderOrigin() );
+		SetAbsOrigin( /* m_vecRagdollOrigin : */ pPlayer->GetRenderOrigin() );			
 		SetAbsAngles( pPlayer->GetRenderAngles() );
 		SetAbsVelocity( m_vecRagdollVelocity );
 
@@ -217,14 +218,14 @@ void C_PortalRagdoll::CreatePortalRagdoll()
 		{
 			Assert( false );
 			iSeq = 0;
-		}
+		}			
 		SetSequence( iSeq );
 		SetCycle( 0.0 );
 
 		Interp_Reset( varMap );
 
 		m_nBody = pPlayer->GetBody();
-		SetModelIndex( m_nModelIndex );
+		SetModelIndex( m_nModelIndex );	
 		// Make us a ragdoll..
 		m_nRenderFX = kRenderFxRagdoll;
 
@@ -241,8 +242,8 @@ void C_PortalRagdoll::CreatePortalRagdoll()
 
 
 //-----------------------------------------------------------------------------
-// Purpose:
-// Input  :  -
+// Purpose: 
+// Input  :  - 
 // Output : IRagdoll*
 //-----------------------------------------------------------------------------
 IRagdoll* C_PortalRagdoll::GetIRagdoll() const
@@ -251,8 +252,8 @@ IRagdoll* C_PortalRagdoll::GetIRagdoll() const
 }
 
 //-----------------------------------------------------------------------------
-// Purpose:
-// Input  : type -
+// Purpose: 
+// Input  : type - 
 //-----------------------------------------------------------------------------
 void C_PortalRagdoll::OnDataChanged( DataUpdateType_t type )
 {
@@ -353,7 +354,7 @@ void C_Portal_Player::UpdateIDTarget()
 	m_iIDEntIndex = 0;
 
 	// don't show IDs in chase spec mode
-	if ( GetObserverMode() == OBS_MODE_CHASE ||
+	if ( GetObserverMode() == OBS_MODE_CHASE || 
 		GetObserverMode() == OBS_MODE_DEATHCAM )
 		return;
 
@@ -531,7 +532,7 @@ void C_Portal_Player::UpdateLookAt( void )
 
 	m_flCurrentHeadYaw = m_flCurrentHeadYaw + flSpeed * ( desiredYaw - m_flCurrentHeadYaw );
 	m_flCurrentHeadYaw	= AngleNormalize( m_flCurrentHeadYaw );
-	SetPoseParameter( m_headYawPoseParam, m_flCurrentHeadYaw );
+	SetPoseParameter( m_headYawPoseParam, m_flCurrentHeadYaw );	
 
 	m_flCurrentHeadPitch = m_flCurrentHeadPitch + flSpeed * ( desiredPitch - m_flCurrentHeadPitch );
 	m_flCurrentHeadPitch = AngleNormalize( m_flCurrentHeadPitch );
@@ -627,7 +628,7 @@ void C_Portal_Player::ClientThink( void )
 				clamp( m_flDeathCCWeight, 0.0f, 1.0f );
 			}
 		}
-		else
+		else 
 		{
 			m_flDeathCCWeight = 0.0f;
 		}
@@ -817,7 +818,7 @@ void C_Portal_Player::DoAnimationEvent( PlayerAnimEvent_t event, int nData )
 
 
 //-----------------------------------------------------------------------------
-// Purpose:
+// Purpose: 
 //-----------------------------------------------------------------------------
 int C_Portal_Player::DrawModel( int flags )
 {
@@ -897,7 +898,7 @@ void C_Portal_Player::PreThink( void )
 
 
 //-----------------------------------------------------------------------------
-// Purpose:
+// Purpose: 
 //-----------------------------------------------------------------------------
 void C_Portal_Player::AddEntity( void )
 {
@@ -934,7 +935,7 @@ void C_Portal_Player::AddEntity( void )
 	}
 }
 
-ShadowType_t C_Portal_Player::ShadowCastType( void )
+ShadowType_t C_Portal_Player::ShadowCastType( void ) 
 {
 	// Drawing player shadows looks bad in first person when they get close to walls
 	// It doesn't make sense to have shadows in the portal view, but not in the main view
@@ -998,8 +999,8 @@ const QAngle& C_Portal_Player::EyeAngles()
 
 
 //-----------------------------------------------------------------------------
-// Purpose:
-// Input  :  -
+// Purpose: 
+// Input  :  - 
 // Output : IRagdoll*
 //-----------------------------------------------------------------------------
 IRagdoll* C_Portal_Player::GetRepresentativeRagdoll() const
@@ -1070,7 +1071,7 @@ void C_Portal_Player::OnDataChanged( DataUpdateType_t type )
 				pLiquidEffect->m_pImmersionPortal = NULL;
 				pLiquidEffect->m_bFadeBackToReality = false;
 			}
-		}
+		}		
 	}
 
 	DetectAndHandlePortalTeleportation();
@@ -1115,13 +1116,13 @@ bool C_Portal_Player::DetectAndHandlePortalTeleportation( void )
 			m_iv_angEyeAngles.Reset(); //copies from m_angEyeAngles
 
 			if( engine->IsPlayingDemo() )
-			{
-				pl.v_angle = m_angEyeAngles;
+			{				
+				pl.v_angle = m_angEyeAngles;		
 				engine->SetViewAngles( pl.v_angle );
 			}
 
 			engine->ResetDemoInterpolation();
-			if( IsLocalPlayer() )
+			if( IsLocalPlayer() ) 
 			{
 				//DevMsg( "FPT: %.2f %.2f %.2f\n", m_angEyeAngles.x, m_angEyeAngles.y, m_angEyeAngles.z );
 				SetLocalAngles( m_angEyeAngles );
@@ -1176,7 +1177,7 @@ float C_Portal_Player::GetFOV( void )
 	float flFOVOffset = C_BasePlayer::GetFOV() + GetZoom();
 
 	// Clamp FOV in MP
-	float min_fov = GetMinFOV();
+	int min_fov = GetMinFOV();
 
 	// Don't let it go too low
 	flFOVOffset = max( min_fov, flFOVOffset );
@@ -1367,7 +1368,7 @@ void C_Portal_Player::UpdatePortalEyeInterpolation( void )
 
 Vector C_Portal_Player::EyePosition()
 {
-	return PortalEyeInterpolation.m_vEyePosition_Interpolated;
+	return PortalEyeInterpolation.m_vEyePosition_Interpolated;  
 }
 
 Vector C_Portal_Player::EyeFootPosition( const QAngle &qEyeAngles )
@@ -1426,7 +1427,7 @@ void C_Portal_Player::CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNe
 
 		eyeOrigin = origin;
 
-		Vector vForward;
+		Vector vForward; 
 		AngleVectors( eyeAngles, &vForward );
 
 		VectorNormalize( vForward );
@@ -1449,7 +1450,7 @@ void C_Portal_Player::CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNe
 	}
 	else
 	{
-		IClientVehicle *pVehicle;
+		IClientVehicle *pVehicle; 
 		pVehicle = GetVehicle();
 
 		if ( !pVehicle )
@@ -1555,7 +1556,7 @@ void C_Portal_Player::CalcPortalView( Vector &eyeOrigin, QAngle &eyeAngles )
 					bTransformEye = true;
 				}
 			}
-		}
+		}		
 	}
 
 	if( bTransformEye )
@@ -1597,7 +1598,7 @@ void C_Portal_Player::CalcPortalView( Vector &eyeOrigin, QAngle &eyeAngles )
 	}
 
 	if( bOverrideSpecialEffects )
-	{
+	{		
 		m_iForceNoDrawInPortalSurface = ((pRemotePortal->m_bIsPortal2)?(2):(1));
 		pRemotePortal->m_fStaticAmount = 0.0f;
 	}
