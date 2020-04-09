@@ -60,7 +60,7 @@ public:
 		pParticle->m_flRollDelta += pParticle->m_flRollDelta * ( timeDelta * -8.0f );
 
 		//Cap the minimum roll
-		if ( fabsf( pParticle->m_flRollDelta ) < 0.5f )
+		if ( fabs( pParticle->m_flRollDelta ) < 0.5f )
 		{
 			pParticle->m_flRollDelta = ( pParticle->m_flRollDelta > 0.0f ) ? 0.5f : -0.5f;
 		}
@@ -152,7 +152,7 @@ float C_BaseExplosionEffect::ScaleForceByDeviation( Vector &deviant, Vector &sou
 
 	float	dot = source.Dot( deviant );
 	
-	dot = spread * fabsf( dot );	
+	dot = spread * fabs( dot );	
 
 	if ( force != NULL )
 	{
@@ -172,7 +172,6 @@ void C_BaseExplosionEffect::Create( const Vector &position, float force, float s
 {
 	m_vecOrigin = position;
 	m_fFlags	= flags;
-	m_flScale = scale;
 
 	//Find the force of the explosion
 	GetForceDirection( m_vecOrigin, force, &m_vecDirection, &m_flForce );
@@ -191,7 +190,7 @@ void C_BaseExplosionEffect::Create( const Vector &position, float force, float s
 	}
 
 	CreateDebris();
-	CreateDynamicLight();
+	//FIXME: CreateDynamicLight();
 	CreateMisc();
 }
 
@@ -216,7 +215,7 @@ void C_BaseExplosionEffect::CreateCore( void )
 	if ( force > EXPLOSION_FORCE_MAX )
 		force = EXPLOSION_FORCE_MAX;
 
-	float spread = 1.0f - ( 0.15f*force );
+	float spread = 1.0f - (0.15f*force);
 
 	SimpleParticle	*pParticle;
 
@@ -250,7 +249,7 @@ void C_BaseExplosionEffect::CreateCore( void )
 	}
 
 	// We only take a portion of the tint
-	tint = ( tint * 0.25f ) + ( Vector( 0.75f, 0.75f, 0.75f ) );
+	tint = (tint * 0.25f)+(Vector(0.75f,0.75f,0.75f));
 	
 	// Rescale to a character range
 	luminosity *= 255;
@@ -571,7 +570,7 @@ void C_BaseExplosionEffect::CreateDebris( void )
 	CSmartPtr<CTrailParticles> pSparkEmitter	= CTrailParticles::Create( "CreateDebris 1" );
 	if ( pSparkEmitter == NULL )
 	{
-		Assert( 0 );
+		assert(0);
 		return;
 	}
 
@@ -703,10 +702,10 @@ void C_BaseExplosionEffect::CreateDynamicLight( void )
 
 	dlight_t *dl = effects->CL_AllocDlight( 0 );
 	
-	VectorCopy(m_vecOrigin, dl->origin);
+	VectorCopy (m_vecOrigin, dl->origin);
 	
 	dl->decay	= 200;
-	dl->radius	= 255 * m_flScale;
+	dl->radius	= 255;
 	dl->color.r = 255;
 	dl->color.g = 220;
 	dl->color.b = 128;
@@ -832,7 +831,7 @@ public:
 		pParticle->m_flRollDelta += pParticle->m_flRollDelta * ( timeDelta * -8.0f );
 
 		//Cap the minimum roll
-		if ( fabsf( pParticle->m_flRollDelta ) < 0.25f )
+		if ( fabs( pParticle->m_flRollDelta ) < 0.25f )
 		{
 			pParticle->m_flRollDelta = ( pParticle->m_flRollDelta > 0.0f ) ? 0.25f : -0.25f;
 		}
@@ -1169,6 +1168,7 @@ void C_WaterExplosionEffect::CreateMisc( void )
 
 	int		numDrops = 32;
 	float	length = 0.1f;
+	Vector	vForward, vRight, vUp;
 	Vector	offDir;
 
 	TrailParticle	*tParticle;

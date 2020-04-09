@@ -75,11 +75,17 @@ struct RagdollInfo_t
 class CAttachmentData
 {
 public:
+	CAttachmentData()
+	{
+		m_nLastFramecount = 31;
+		m_bAnglesComputed = 1;
+	}
+
 	matrix3x4_t	m_AttachmentToWorld;
 	QAngle	m_angRotation;
 	Vector	m_vOriginVelocity;
-	int		m_nLastFramecount : 31;
-	bool	m_bAnglesComputed : 1;
+	int		m_nLastFramecount;
+	int		m_bAnglesComputed;
 };
 
 
@@ -207,8 +213,6 @@ public:
 	void	GetBonePosition( int iBone, Vector &origin, QAngle &angles );
 	void	GetBoneTransform( int iBone, matrix3x4_t &pBoneToWorld );
 
-	void	ExtractBbox( int nSequence, Vector &mins, Vector &maxs );
-
 	//=============================================================================
 	// HPE_BEGIN:
 	// [menglish] Finds the bone associated with the given hitbox
@@ -309,7 +313,7 @@ public:
 
 	bool IsOnFire() { return ( (GetFlags() & FL_ONFIRE) != 0 ); }
 
-	inline float					GetPlaybackRate() const;
+	inline float					GetPlaybackRate();
 	inline void						SetPlaybackRate( float rate );
 
 	void							SetModelScale( float scale, float change_duration = 0.0f  );
@@ -706,7 +710,7 @@ inline void C_BaseAnimating::ResetSequence(int nSequence)
 	ResetSequenceInfo();
 }
 
-inline float C_BaseAnimating::GetPlaybackRate() const
+inline float C_BaseAnimating::GetPlaybackRate()
 {
 	return m_flPlaybackRate;
 }

@@ -12,7 +12,6 @@
 //=============================================================================//
 #include "cbase.h"
 #include "te_particlesystem.h"
-#include "rope.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -130,6 +129,4 @@ void TE_Explosion( IRecipientFilter& filter, float delay,
 
 	// Send it over the wire
 	g_TEExplosion.Create( filter, delay );
-	
-	CRopeKeyframe::ShakeRopes( *pos, radius * 1.35f, magnitude * 5.f );
 }

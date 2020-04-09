@@ -1758,11 +1758,11 @@ void CFastZombie::BuildScheduleTestBits( void )
 {
 	// FIXME: This is probably the desired call to make, but it opts into an untested base class path, we'll need to
 	//		  revisit this and figure out if we want that. -- jdw
-	BaseClass::BuildScheduleTestBits();
+	// BaseClass::BuildScheduleTestBits();
 	//
 	// For now, make sure our active behavior gets a chance to add its own bits
-	//if ( GetPrimaryBehavior() )
-	//	GetPrimaryBehavior()->BuildScheduleTestBits();
+	if ( GetRunningBehavior() )
+		GetRunningBehavior()->BridgeBuildScheduleTestBits(); 
 
 #ifdef HL2_EPISODIC
 	SetCustomInterruptCondition( COND_PROVOKED );

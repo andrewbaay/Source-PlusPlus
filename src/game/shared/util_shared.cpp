@@ -1077,7 +1077,11 @@ char* ReadAndAllocStringValue( KeyValues *pSub, const char *pName, const char *p
 		return "";
 	}
 
-	return V_strdup( pValue );
+	int len = Q_strlen( pValue ) + 1;
+	char *pAlloced = new char[ len ];
+	Assert( pAlloced );
+	Q_strncpy( pAlloced, pValue, len );
+	return pAlloced;
 }
 
 int UTIL_StringFieldToInt( const char *szValue, const char **pValueStrings, int iNumStrings )

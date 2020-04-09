@@ -59,6 +59,7 @@ void C_TELargeFunnel::CreateFunnel( void )
 	SimpleParticle *pParticle;
 
 	Vector		vecDir;
+	Vector		vecDest;
 
 	float ratio = 0.25;
 	float invratio = 1 / ratio;

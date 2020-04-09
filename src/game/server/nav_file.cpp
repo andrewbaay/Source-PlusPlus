@@ -149,11 +149,11 @@ void PlaceDirectory::Load( CUtlBuffer &fileBuffer, int version )
 
 	// read each entry
 	char placeName[256];
-	const unsigned short placeNameSize = sizeof( placeName );
+	unsigned short len;
 	for( int i=0; i<count; ++i )
 	{
-		unsigned short len = fileBuffer.GetUnsignedShort();
-		fileBuffer.Get( placeName, MIN( placeNameSize, len ) );
+		len = fileBuffer.GetUnsignedShort();
+		fileBuffer.Get( placeName, MIN( sizeof( placeName ), len ) );
 
 		Place place = TheNavMesh->NameToPlace( placeName );
 		if (place == UNDEFINED_PLACE)

@@ -114,7 +114,7 @@ private:
 
 DECLARE_HUDELEMENT( CHudCapturePanel );
 
-ConVar hud_capturepanel( "hud_capturepanel", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Set to 0 to not draw the HUD capture panel" );
+ConVar hud_capturepanel( "hud_capturepanel", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Set to 0 to not draw the HUD capture panel" );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -439,9 +439,6 @@ CHudCapturePanel::CHudCapturePanel( const char *pElementName ) : CHudElement( pE
 
 	// load control settings...
 	LoadControlSettings( "resource/UI/HudCapturePanel.res" );
-
-
-	SetVisible(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -845,7 +842,8 @@ void CHudCapturePanel::OnThink()
 //-----------------------------------------------------------------------------
 void CHudCapturePanel::FireGameEvent( IGameEvent *event )
 {
-	//m_iCurrentCP = -1;
+	m_iCurrentCP = -1;
+	return;
 
 	const char *eventname = event->GetName();
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();

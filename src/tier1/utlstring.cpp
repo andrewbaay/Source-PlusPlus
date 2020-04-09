@@ -136,8 +136,7 @@ void CUtlString::Clear()
 
 void CUtlString::Purge()
 {
-	if ( m_pString )
-  	  free( m_pString );
+    free( m_pString );
     m_pString = NULL;
 }
 
@@ -484,7 +483,7 @@ void CUtlString::TrimRight( char cTarget )
 	if ( nIndex < nLastCharIndex )
 	{
 		m_pString[nIndex + 1] = 0;
-		SetLength( nIndex + 1 );
+		SetLength( nIndex + 2 );
 	}
 }
 
@@ -517,7 +516,7 @@ void CUtlString::TrimRight( const char *szTargets )
 	if ( i < nLastCharIndex )
 	{
 		m_pString[i + 1] = 0;
-		SetLength( i + 1 );
+		SetLength( i + 2 );
 	}
 }
 

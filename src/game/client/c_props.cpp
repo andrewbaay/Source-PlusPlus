@@ -118,49 +118,48 @@ unsigned int C_DynamicProp::ComputeClientSideAnimationFlags()
 
 // ------------------------------------------------------------------------------------------ //
 // ------------------------------------------------------------------------------------------ //
+class C_BasePropDoor : public C_DynamicProp
+{
+	DECLARE_CLASS( C_BasePropDoor, C_DynamicProp );
+public:
+	DECLARE_CLIENTCLASS();
+
+	// constructor, destructor
+	C_BasePropDoor( void );
+	virtual ~C_BasePropDoor( void );
+
+	virtual void OnDataChanged( DataUpdateType_t type );
+
+	virtual bool TestCollision( const Ray_t &ray, unsigned int mask, trace_t& trace );
+
+private:
+	C_BasePropDoor( const C_BasePropDoor & );
+};
+
 IMPLEMENT_CLIENTCLASS_DT(C_BasePropDoor, DT_BasePropDoor, CBasePropDoor)
 END_RECV_TABLE()
 
 C_BasePropDoor::C_BasePropDoor( void )
 {
-	m_modelChanged = false;
 }
 
 C_BasePropDoor::~C_BasePropDoor( void )
 {
 }
 
-void C_BasePropDoor::PostDataUpdate( DataUpdateType_t updateType )
-{
-	if ( updateType == DATA_UPDATE_CREATED )
-	{
-		BaseClass::PostDataUpdate( updateType );
-	}
-	else
-	{
-		const model_t *oldModel = GetModel();
-		BaseClass::PostDataUpdate( updateType );
-		const model_t *newModel = GetModel();
-
-		if ( oldModel != newModel )
-		{
-			m_modelChanged = true;
-		}
-	}
-}
-void VPhysicsShadowDataChanged( bool bCreate, C_BaseEntity *pEntity );
 void C_BasePropDoor::OnDataChanged( DataUpdateType_t type )
 {
 	BaseClass::OnDataChanged( type );
 
-	bool bCreate = (type == DATA_UPDATE_CREATED) ? true : false;
-	if ( VPhysicsGetObject() && m_modelChanged )
+	if ( type == DATA_UPDATE_CREATED )
 	{
-		VPhysicsDestroyObject();
-		m_modelChanged = false;
-		bCreate = true;
+		SetSolid(SOLID_VPHYSICS);
+		VPhysicsInitShadow( false, false );
 	}
-	VPhysicsShadowDataChanged(bCreate, this);
+	else if ( VPhysicsGetObject() )
+	{
+		VPhysicsGetObject()->UpdateShadow( GetAbsOrigin(), GetAbsAngles(), false, TICK_INTERVAL );
+	}
 }
 
 bool C_BasePropDoor::TestCollision( const Ray_t &ray, unsigned int mask, trace_t& trace )
@@ -168,7 +167,6 @@ bool C_BasePropDoor::TestCollision( const Ray_t &ray, unsigned int mask, trace_t
 	if ( !VPhysicsGetObject() )
 		return false;
 
-	MDLCACHE_CRITICAL_SECTION();
 	CStudioHdr *pStudioHdr = GetModelPtr( );
 	if (!pStudioHdr)
 		return false;
@@ -183,17 +181,6 @@ bool C_BasePropDoor::TestCollision( const Ray_t &ray, unsigned int mask, trace_t
 
 	return false;
 }
-
-//just need to reference by classname in portal
-class C_PropDoorRotating : public C_BasePropDoor
-{
-public:
-	DECLARE_CLASS( C_PropDoorRotating, C_BasePropDoor );
-	DECLARE_CLIENTCLASS();
-};
-
-IMPLEMENT_CLIENTCLASS_DT(C_PropDoorRotating, DT_PropDoorRotating, CPropDoorRotating)
-END_RECV_TABLE()
 
 // ------------------------------------------------------------------------------------------ //
 // Special version of func_physbox.

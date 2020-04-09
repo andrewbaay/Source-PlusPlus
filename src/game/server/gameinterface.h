@@ -188,11 +188,41 @@ extern CUtlLinkedList<CMapEntityRef, unsigned short> g_MapEntityRefs;
 class CMapLoadEntityFilter : public IMapEntityFilter
 {
 public:
-	virtual bool ShouldCreateEntity( const char *pClassname ) OVERRIDE;
+	virtual bool ShouldCreateEntity( const char *pClassname )
+	{
+		// During map load, create all the entities.
+		return true;
+	}
 
-	virtual CBaseEntity* CreateNextEntity( const char *pClassname ) OVERRIDE;
+	virtual CBaseEntity* CreateNextEntity( const char *pClassname )
+	{
+		CBaseEntity *pRet = CreateEntityByName( pClassname );
+
+		CMapEntityRef ref;
+		ref.m_iEdict = -1;
+		ref.m_iSerialNumber = -1;
+
+		if ( pRet )
+		{
+			ref.m_iEdict = pRet->entindex();
+			if ( pRet->edict() )
+				ref.m_iSerialNumber = pRet->edict()->m_NetworkSerialNumber;
+		}
+
+		g_MapEntityRefs.AddToTail( ref );
+		return pRet;
+	}
 };
 
 bool IsEngineThreaded();
 
+class CServerGameTags : public IServerGameTags
+{
+public:
+	virtual void GetTaggedConVarList( KeyValues *pCvarTagList );
+
+};
+EXPOSE_SINGLE_INTERFACE( CServerGameTags, IServerGameTags, INTERFACEVERSION_SERVERGAMETAGS );
+
 #endif // GAMEINTERFACE_H
+

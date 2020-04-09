@@ -138,8 +138,6 @@ public:
 	virtual void		FreezeFrame( float flFreezeTime ) = 0;
 
 	virtual IReplayScreenshotSystem *GetReplayScreenshotSystem() = 0;
-
-	virtual void		PostSimulate() = 0;
 };
 
 extern IViewRender *view;

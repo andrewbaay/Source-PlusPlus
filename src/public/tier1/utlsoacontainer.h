@@ -309,10 +309,6 @@ public:
 	void FillAttrWithInterpolatedValues( int nAttr, Vector flValue00, Vector flValue10,
 										 Vector const &flValue01, Vector const &flValue11 ) const;
 
-	EAttributeDataType GetAttributeType( int i ) const
-	{
-		return m_nDataType[i];
-	}
 };
 
 class CFltX4AttributeIterator : public CStridedConstPtr<fltx4>

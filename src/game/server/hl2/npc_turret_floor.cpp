@@ -471,8 +471,6 @@ void CNPC_FloorTurret::Deploy( void )
 	//If we're done, then start searching
 	if ( IsActivityFinished() )
 	{
-		StopSound( entindex(), "NPC_FloorTurret.Alert" );
-
 		SetActivity( (Activity) ACT_FLOOR_TURRET_OPEN_IDLE );
 
 		m_flShotTime  = gpGlobals->curtime + 1.0f;
@@ -677,7 +675,7 @@ bool CNPC_FloorTurret::UpdateFacing( void )
 	
 	SetPoseParameter( m_poseAim_Pitch, GetPoseParameter( m_poseAim_Pitch ) + ( flDiff / 1.5f ) );
 
-	if ( fabsf( flDiff ) > 0.1f )
+	if ( fabs( flDiff ) > 0.1f )
 	{
 		bMoved = true;
 	}
@@ -687,7 +685,7 @@ bool CNPC_FloorTurret::UpdateFacing( void )
 
 	SetPoseParameter( m_poseAim_Yaw, GetPoseParameter( m_poseAim_Yaw ) + ( flDiff / 1.5f ) );
 
-	if ( fabsf( flDiff ) > 0.1f )
+	if ( fabs( flDiff ) > 0.1f )
 	{
 		bMoved = true;
 	}
@@ -1205,7 +1203,7 @@ bool CNPC_FloorTurret::IsValidEnemy( CBaseEntity *pEnemy )
 
 	QAngle angleToTarget;
 	VectorAngles( los, angleToTarget );
-	float flZDiff = fabsf( AngleNormalize( angleToTarget.x - GetAbsAngles().x) );
+	float flZDiff = fabs( AngleNormalize( angleToTarget.x - GetAbsAngles().x) );
 	if ( flZDiff > 28.0f && los.LengthSqr() > 4096.0f )
 		return false;
 
@@ -1299,8 +1297,6 @@ void CNPC_FloorTurret::TippedThink( void )
 			//If we're done moving to our desired facing, close up
 			if ( UpdateFacing() == false )
 			{
-				StopSound( entindex(), "NPC_FloorTurret.Alarm" );
-
 				//Make any last death noises and anims
 				EmitSound( "NPC_FloorTurret.Die" );
 				SpinDown();
@@ -1398,8 +1394,6 @@ void CNPC_FloorTurret::ReturnToLife( void )
 
 	// Become active again
 	Enable();
-
-	StopSound( entindex(), "NPC_FloorTurret.Alarm" );
 }	
 
 //-----------------------------------------------------------------------------

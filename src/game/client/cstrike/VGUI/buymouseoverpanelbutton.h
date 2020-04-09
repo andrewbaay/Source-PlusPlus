@@ -249,7 +249,7 @@ public:
 					pLabel->SetFgColor( Color( 192, 28, 0, 255 ) );
 				}
 
-				Q_snprintf( strPrice, sizeof( strPrice ), "%d", fabsf( iDifference ) );
+				Q_snprintf( strPrice, sizeof( strPrice ), "%d", abs( iDifference ) );
 
 				g_pVGuiLocalize->ConvertANSIToUnicode( strPrice, szPrice, sizeof(szPrice));
 

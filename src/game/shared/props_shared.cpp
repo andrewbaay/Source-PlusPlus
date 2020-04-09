@@ -395,8 +395,6 @@ int CPropData::ParsePropFromKV( CBaseEntity *pProp, KeyValues *pSection, KeyValu
 		Assert( i < 32 );
 
 		propdata_interaction_s *pInteraction = &sPropdataInteractionSections[i];
-		if ( !pInteraction->pszSectionName )
-			continue;
 
 		KeyValues *pkvCurrentInter = pInteractionSection->FindKey( pInteraction->pszSectionName );
 		if ( pkvCurrentInter )
@@ -408,23 +406,6 @@ int CPropData::ParsePropFromKV( CBaseEntity *pProp, KeyValues *pSection, KeyValu
 			}
 		}
 	}
-
-#ifdef GAME_DLL
-	// Parse optional contexts from the prop
-	KeyValues *pkvContexts = pInteractionSection->FindKey( "prop_contexts" );
-	if ( pkvContexts )
-	{
-		for ( KeyValues *pContext = pkvContexts->GetFirstSubKey(); pContext != NULL; pContext = pContext->GetNextKey() )
-		{
-			const char *pName = pContext->GetName();
-			const char *pValue = pContext->GetString();
-			if ( pName && pValue )
-			{
-				pProp->AddContext( UTIL_VarArgs( "%s:%s", pName, pValue ) );
-			}
-		}
-	}
-#endif
 
 	// If the base said we're allowed to be static, return that
 	if ( iBaseResult == PARSE_SUCCEEDED_ALLOWED_STATIC )
@@ -483,12 +464,11 @@ const char *CPropData::GetRandomChunkModel( const char *pszBreakableSection, int
 		return NULL;
 
 	// Find the right section
-	const int iCount = m_BreakableChunks.Count();
-	const size_t pBreakableSectionSize = strlen( pszBreakableSection );
+	int iCount = m_BreakableChunks.Count();
 	int i;
 	for ( i = 0; i < iCount; i++ )
 	{
-		if ( !Q_strncmp( STRING(m_BreakableChunks[i].iszChunkType), pszBreakableSection, pBreakableSectionSize ) )
+		if ( !Q_strncmp( STRING(m_BreakableChunks[i].iszChunkType), pszBreakableSection, strlen(pszBreakableSection) ) )
 			break;
 	}
 	if ( i == iCount )
@@ -909,6 +889,10 @@ EHANDLE g_hGameGibManager;
 
 CGameGibManager *GetGibManager( void )
 {
+#ifndef HL2_EPISODIC
+	return NULL;
+#endif
+
 	if ( g_hGameGibManager == NULL )
 	{
 		g_hGameGibManager = (CGameGibManager *)gEntList.FindEntityByClassname( NULL, "game_gib_manager" );
@@ -1006,13 +990,9 @@ void PropBreakableCreateAll( int modelindex, IPhysicsObject *pPhysics, const bre
 	{
 		for ( int i = 0; i < list.Count(); i++ )
 		{
-			const char* modelName = list[i].modelName;
-			int modelIndex = modelinfo->GetModelIndex( modelName );
+			int modelIndex = modelinfo->GetModelIndex( list[i].modelName );
 			if ( modelIndex <= 0 )
-			{
-				Warning( "Unable to create non-precached breakmodel %s\n", modelName );
 				continue;
-			}
 
 			// Skip multiplayer pieces that should be spawning on the other dll
 #ifdef GAME_DLL
@@ -1164,13 +1144,6 @@ void PropBreakableCreateAll( int modelindex, IPhysicsObject *pPhysics, const bre
 					break;
 
 				Q_strncpy( breakModel.modelName, g_PropDataSystem.GetRandomChunkModel(STRING(pBreakableInterface->GetBreakableModel()), pBreakableInterface->GetMaxBreakableSize()), sizeof(breakModel.modelName) );
-
-				if ( modelinfo->GetModelIndex( breakModel.modelName ) == -1 )
-				{
-					// This model doesn't exist!
-					DevWarning( "PropBreakableCreateAll: Could not create model %s\n", breakModel.modelName );
-					continue;
-				}
 
 				breakModel.health = 1;
 				breakModel.fadeTime = RandomFloat(5,10);
@@ -1597,13 +1570,6 @@ CBaseEntity *CreateGibsFromList( CUtlVector<breakmodel_t> &list, int modelindex,
 					break;
 
 				Q_strncpy( breakModel.modelName, g_PropDataSystem.GetRandomChunkModel(STRING(pBreakableInterface->GetBreakableModel()), pBreakableInterface->GetMaxBreakableSize()), sizeof(breakModel.modelName) );
-
-				if ( modelinfo->GetModelIndex( breakModel.modelName ) == -1 )
-				{
-					// This model doesn't exist!
-					DevWarning( "PropBreakableCreateAll: Could not create model %s\n", breakModel.modelName );
-					continue;
-				}
 
 				breakModel.health = 1;
 				breakModel.fadeTime = RandomFloat(5,10);

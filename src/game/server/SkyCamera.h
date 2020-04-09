@@ -30,8 +30,6 @@ public:
 	virtual void Spawn( void );
 	virtual void Activate();
 
-	void InputActivateSkybox( inputdata_t &inputdata );
-
 public:
 	sky3dparams_t	m_skyboxData;
 	bool			m_bUseAngles;

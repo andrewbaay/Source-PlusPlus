@@ -18,6 +18,7 @@
 #include "commandmenu.h"
 #include <igameevents.h>
 
+using namespace vgui;
 
 class IBaseFileSystem;
 class IGameUIFuncs;
@@ -54,9 +55,9 @@ public:
 	
 #ifndef _XBOX
 	virtual int GetViewPortScheme() { return m_pBackGround->GetScheme(); }
-	virtual vgui::VPANEL GetViewPortPanel() { return m_pBackGround->GetVParent(); }
+	virtual VPANEL GetViewPortPanel() { return m_pBackGround->GetVParent(); }
 #endif
-	virtual vgui::AnimationController *GetAnimationController() { return m_pAnimController; }
+	virtual AnimationController *GetAnimationController() { return m_pAnimController; }
 
 	virtual void ShowBackGround(bool bShow) 
 	{ 
@@ -92,10 +93,9 @@ protected:
 			SetSizeable(false);
 			SetProportional(true);
 		}
-		~CBackGroundPanel() {}
 	private:
 
-		virtual void ApplySchemeSettings( vgui::IScheme *pScheme)
+		virtual void ApplySchemeSettings(IScheme *pScheme)
 		{
 			BaseClass::ApplySchemeSettings(pScheme);
 			SetBgColor(pScheme->GetColor("ViewportBG", Color( 0,0,0,0 ) )); 
@@ -112,7 +112,7 @@ protected:
 			BaseClass::PerformLayout();
 		}
 
-		virtual void OnMousePressed( vgui::MouseCode code) { }// don't respond to mouse clicks
+		virtual void OnMousePressed(MouseCode code) { }// don't respond to mouse clicks
 		virtual vgui::VPANEL IsWithinTraverse( int x, int y, bool traversePopups )
 		{
 			return ( vgui::VPANEL )0;

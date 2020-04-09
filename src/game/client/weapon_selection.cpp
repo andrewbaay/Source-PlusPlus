@@ -174,7 +174,7 @@ void CBaseHudWeaponSelection::ProcessInput()
 	}
 
 	// Has the player selected a weapon?
-	if ( gHUD.m_iKeyBits & IN_ATTACK )
+	if ( gHUD.m_iKeyBits & (IN_ATTACK | IN_ATTACK2) )
 	{
 		if ( IsWeaponSelectable() )
 		{
@@ -183,22 +183,14 @@ void CBaseHudWeaponSelection::ProcessInput()
 #endif
 			{
 				// Swallow the button
-				gHUD.m_iKeyBits &= ~IN_ATTACK;
+				gHUD.m_iKeyBits &= ~(IN_ATTACK | IN_ATTACK2);
 				input->ClearInputButton( IN_ATTACK );
+				input->ClearInputButton( IN_ATTACK2 );
 			}
 
 			// select weapon
 			SelectWeapon();
 		}
-	}
-
-	// Has the player selected a weapon?
-	if ( gHUD.m_iKeyBits & IN_ATTACK2 )
-	{
-		// Swallow the button
-		gHUD.m_iKeyBits &= ~IN_ATTACK2;
-		input->ClearInputButton( IN_ATTACK2 );
-		CancelWeaponSelection();
 	}
 }
 

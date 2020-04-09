@@ -25,7 +25,6 @@
 #include "c_env_fog_controller.h"
 #include "igameevents.h"
 #include "GameEventListener.h"
-#include "c_colorcorrection.h"
 
 #if defined USES_ECON_ITEMS
 #include "econ_item.h"
@@ -151,7 +150,7 @@ public:
 	virtual CBaseEntity	*GetObserverTarget() const;
 	void			SetObserverTarget( EHANDLE hObserverTarget );
 
-	bool			AudioStateIsUnderwater( const Vector& vecMainViewOrigin ) const;
+	bool			AudioStateIsUnderwater( Vector vecMainViewOrigin );
 
 	bool IsObserver() const;
 	bool IsHLTV() const;
@@ -364,7 +363,7 @@ public:
 
 	surfacedata_t *GetSurfaceData( void ) { return m_pSurfaceData; }
 
-	void SetLadderNormal( const Vector& vecLadderNormal ) { m_vecLadderNormal = vecLadderNormal; }
+	void SetLadderNormal( Vector vecLadderNormal ) { m_vecLadderNormal = vecLadderNormal; }
 
 	// Hints
 	virtual CHintSystem		*Hints( void ) { return NULL; }
@@ -387,8 +386,6 @@ public:
 	bool					ShouldAnnounceAchievement( void ){ return m_flNextAchievementAnnounceTime < gpGlobals->curtime; }
 	void					SetNextAchievementAnnounceTime( float flTime ){ m_flNextAchievementAnnounceTime = flTime; }
 
-	C_ColorCorrection*		GetActiveColorCorrection() const;
-	
 #if defined USES_ECON_ITEMS
 	// Wearables
 	virtual void			UpdateWearables();
@@ -623,11 +620,6 @@ protected:
 
 private:
 
-	CNetworkHandle( C_ColorCorrection, m_hColorCorrectionCtrl );		// active FXVolume color correction
-	CNetworkHandle( C_BaseEntity, m_hTonemapController );
-
-	friend void GetTonemapSettingsFromEnvTonemapController();
-
 	struct StepSoundCache_t
 	{
 		StepSoundCache_t() : m_usSoundNameIndex( 0 ) {}
@@ -702,11 +694,6 @@ inline const CUserCmd *CBasePlayer::GetCurrentUserCommand() const
 {
 	Assert( m_pCurrentCommand );
 	return m_pCurrentCommand;
-}
-
-inline C_ColorCorrection* C_BasePlayer::GetActiveColorCorrection() const
-{
-	return m_hColorCorrectionCtrl.Get();
 }
 
 #endif // C_BASEPLAYER_H

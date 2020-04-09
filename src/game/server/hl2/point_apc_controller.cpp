@@ -284,7 +284,7 @@ void CAPCController::Think( void )
 	SetLocalAngularVelocity( vec3_angle );
 	TrackTarget();
 
-	if ( fabsf(GetLocalAngularVelocity().x) > 1 || fabsf(GetLocalAngularVelocity().y) > 1 )
+	if ( fabs(GetLocalAngularVelocity().x) > 1 || fabs(GetLocalAngularVelocity().y) > 1 )
 		StartRotSound();
 	else
 		StopRotSound();

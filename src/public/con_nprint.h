@@ -24,8 +24,8 @@ typedef struct con_nprint_s
 } con_nprint_t;
 
 // Print string on line idx
-FMTFUNCTION_WIN( 3, 4 ) void Con_NPrintf( int idx, PRINTF_FORMAT_STRING const char *fmt, ... );
+void Con_NPrintf( int idx, PRINTF_FORMAT_STRING const char *fmt, ... );
 // Customized printout
-FMTFUNCTION_WIN( 3, 4 ) void Con_NXPrintf( const con_nprint_t *info, PRINTF_FORMAT_STRING const char *fmt, ... );
+void Con_NXPrintf( const con_nprint_t *info, PRINTF_FORMAT_STRING const char *fmt, ... );
 
 #endif // CON_NPRINT_H

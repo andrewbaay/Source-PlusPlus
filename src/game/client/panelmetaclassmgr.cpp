@@ -28,7 +28,10 @@ bool ParseRGBA( KeyValues *pValues, const char* pFieldName, int& r, int& g, int&
 	if ( !pColorString || !pColorString[ 0 ] )
 		return false;
 
-	if ( sscanf( pColorString, "%i %i %i %i", &r, &g, &b, &a ) != 4 )
+	// Try and scan them in
+	int scanned;
+	scanned = sscanf( pColorString, "%i %i %i %i", &r, &g, &b, &a );
+	if ( scanned != 4 )
 	{
 		Warning( "Couldn't scan four color values from %s\n", pColorString );
 		return false;
@@ -87,7 +90,10 @@ bool ParseCoord( KeyValues *pValues, const char* pFieldName, int& x, int& y )
 	if ( !pCoordString || !pCoordString[ 0 ] )
 		return false;
 
-	if ( sscanf( pCoordString, "%i %i", &x, &y ) != 2 )
+	// Try and scan them in
+	int scanned;
+	scanned = sscanf( pCoordString, "%i %i", &x, &y );
+	if ( scanned != 2 )
 	{
 		Warning( "Couldn't scan 2d coordinate values from %s\n", pCoordString );
 		return false;
@@ -107,7 +113,10 @@ bool ParseRect( KeyValues *pValues, const char* pFieldName, int& x, int& y, int&
 	if ( !pRectString || !pRectString[ 0 ] )
 		return false;
 
-	if ( sscanf( pRectString, "%i %i %i %i", &x, &y, &w, &h ) != 4 )
+	// Try and scan them in
+	int scanned;
+	scanned = sscanf( pRectString, "%i %i %i %i", &x, &y, &w, &h );
+	if ( scanned != 4 )
 	{
 		Warning( "Couldn't scan rectangle values from %s\n", pRectString );
 		return false;
@@ -219,20 +228,12 @@ IPanelMetaClassMgr* PanelMetaClassMgr()
 //-----------------------------------------------------------------------------
 // constructor, destructor
 //-----------------------------------------------------------------------------
-CPanelMetaClassMgrImp::CPanelMetaClassMgrImp() : m_PanelTypeDict( k_eDictCompareTypeCaseInsensitive )
+CPanelMetaClassMgrImp::CPanelMetaClassMgrImp() : m_PanelTypeDict( true, 0, 32 )
 {
 }
 
 CPanelMetaClassMgrImp::~CPanelMetaClassMgrImp()
 {
-	unsigned short index = m_MetaClassKeyValues.First();
-	while ( index != m_MetaClassKeyValues.InvalidIndex() )
-	{
-		m_MetaClassKeyValues[index]->deleteThis();
-		index = m_MetaClassKeyValues.Next( index );
-	}
-
-	m_MetaClassKeyValues.RemoveAll();
 }
 
 
@@ -243,7 +244,15 @@ void CPanelMetaClassMgrImp::InstallPanelType( const char* pPanelName, IPanelFact
 {
 	Assert( pPanelName && pFactory );
 	
-	m_PanelTypeDict.Insert( pPanelName, pFactory );
+	// convert to lowercase
+	int len = Q_strlen(pPanelName) + 1;
+	char* pTemp = (char*)stackalloc( len );
+	Q_strncpy( pTemp, pPanelName, len );
+	Q_strnlwr( pTemp, len );
+
+	m_PanelTypeDict.Insert( pTemp, pFactory );
+
+	stackfree( pTemp );
 }
 
 

@@ -682,7 +682,7 @@ int CPlayerAnimState::ConvergeAngles( float goal,float maxrate, float dt, float&
 	int direction = TURN_NONE;
 
 	float anglediff = goal - current;
-	float anglediffabs = fabsf( anglediff );
+	float anglediffabs = fabs( anglediff );
 
 	anglediff = AngleNormalize( anglediff );
 
@@ -696,7 +696,7 @@ int CPlayerAnimState::ConvergeAngles( float goal,float maxrate, float dt, float&
 
 	float maxmove = maxrate * dt * scale;
 
-	if ( fabsf( anglediff ) < maxmove )
+	if ( fabs( anglediff ) < maxmove )
 	{
 		current = goal;
 	}
@@ -779,7 +779,7 @@ void CPlayerAnimState::ComputePoseParam_BodyLookYaw( void )
 
 		bool rotated_too_far = false;
 
-		float yawmagnitude = fabsf( yawdelta );
+		float yawmagnitude = fabs( yawdelta );
 
 		// If too far, then need to turn in place
 		if ( yawmagnitude > 45 )
@@ -837,7 +837,7 @@ void CPlayerAnimState::ComputePoseParam_BodyLookYaw( void )
 	if ( m_nTurningInPlace != TURN_NONE )
 	{
 		// If we're close to finishing the turn, then turn off the turning animation
-		if ( fabsf( m_flCurrentFeetYaw - m_flGoalFeetYaw ) < MIN_TURN_ANGLE_REQUIRING_TURN_ANIMATION )
+		if ( fabs( m_flCurrentFeetYaw - m_flGoalFeetYaw ) < MIN_TURN_ANGLE_REQUIRING_TURN_ANIMATION )
 		{
 			m_nTurningInPlace = TURN_NONE;
 		}

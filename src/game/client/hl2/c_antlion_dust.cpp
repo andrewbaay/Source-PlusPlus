@@ -154,7 +154,7 @@ void C_TEAntlionDust::PostDataUpdate( DataUpdateType_t updateType )
 		
 		Vector	dir	= particle.m_Pos - m_vecOrigin;
 		particle.m_vecVelocity = dir * random->RandomFloat( 0.5f, 1.0f );
-		dir.z = fabsf(dir.z);
+		dir.z = fabs(dir.z);
 
 		float	colorRamp = random->RandomFloat( 0.5f, 1.0f );
 		Vector	color = vecColor*colorRamp;

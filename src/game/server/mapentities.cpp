@@ -257,32 +257,31 @@ void SpawnAllEntities( int nEntities, HierarchicalSpawn_t *pSpawnList, bool bAct
 			// UNDONE: Promote this up to the root of this function?
 			MDLCACHE_CRITICAL_SECTION();
 			CBaseEntity *pParent = pSpawnList[nEntity].m_pDeferredParent;
-			if ( pParent )
+			int iAttachment = -1;
+			CBaseAnimating *pAnim = pParent->GetBaseAnimating();
+			if ( pAnim )
 			{
-				int iAttachment = -1;
-				CBaseAnimating *pAnim = pParent->GetBaseAnimating();
-				if ( pAnim )
-				{
-					iAttachment = pAnim->LookupAttachment(pSpawnList[nEntity].m_pDeferredParentAttachment);
-				}
-				pEntity->SetParent( pParent, iAttachment );
+				iAttachment = pAnim->LookupAttachment(pSpawnList[nEntity].m_pDeferredParentAttachment);
 			}
+			pEntity->SetParent( pParent, iAttachment );
 		}
-
-		if (DispatchSpawn(pEntity) < 0)
+		if ( pEntity )
 		{
-			for ( int i = nEntity+1; i < nEntities; i++ )
+			if (DispatchSpawn(pEntity) < 0)
 			{
-				// this is a child object that will be deleted now
-				if ( pSpawnList[i].m_pEntity && pSpawnList[i].m_pEntity->IsMarkedForDeletion() )
+				for ( int i = nEntity+1; i < nEntities; i++ )
 				{
-					pSpawnList[i].m_pEntity = NULL;
+					// this is a child object that will be deleted now
+					if ( pSpawnList[i].m_pEntity && pSpawnList[i].m_pEntity->IsMarkedForDeletion() )
+					{
+						pSpawnList[i].m_pEntity = NULL;
+					}
 				}
+				// Spawn failed.
+				gEntList.CleanupDeleteList();
+				// Remove the entity from the spawn list
+				pSpawnList[nEntity].m_pEntity = NULL;
 			}
-			// Spawn failed.
-			gEntList.CleanupDeleteList();
-			// Remove the entity from the spawn list
-			pSpawnList[nEntity].m_pEntity = NULL;
 		}
 	}
 
@@ -518,7 +517,7 @@ void SpawnHierarchicalList( int nEntities, HierarchicalSpawn_t *pSpawnList, bool
 //-----------------------------------------------------------------------------
 void MapEntity_PrecacheEntity( const char *pEntData, int &nStringSize )
 {
-	CEntityMapData entData( pEntData, nStringSize );
+	CEntityMapData entData( (char*)pEntData, nStringSize );
 	char className[MAPKEY_MAXLENGTH];
 	
 	if (!entData.ExtractValue("classname", className))
@@ -548,7 +547,7 @@ void MapEntity_PrecacheEntity( const char *pEntData, int &nStringSize )
 //-----------------------------------------------------------------------------
 const char *MapEntity_ParseEntity(CBaseEntity *&pEntity, const char *pEntData, IMapEntityFilter *pFilter)
 {
-	CEntityMapData entData( pEntData );
+	CEntityMapData entData( (char*)pEntData );
 	char className[MAPKEY_MAXLENGTH];
 	
 	if (!entData.ExtractValue("classname", className))

@@ -68,8 +68,6 @@ extern ConVar replay_rendersetting_renderglow;
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-using namespace vgui;
-
 #define ACHIEVEMENT_ANNOUNCEMENT_MIN_TIME 10
 
 class CHudWeaponSelection;
@@ -853,7 +851,6 @@ void ClientModeShared::LevelInit( const char *newmap )
 	// Reset any player explosion/shock effects
 	CLocalPlayerFilter filter;
 	enginesound->SetPlayerDSP( filter, 0, true );
-	enginesound->SetRoomType( filter, 1 );
 }
 
 //-----------------------------------------------------------------------------
@@ -877,7 +874,6 @@ void ClientModeShared::LevelShutdown( void )
 	// Reset any player explosion/shock effects
 	CLocalPlayerFilter filter;
 	enginesound->SetPlayerDSP( filter, 0, true );
-	enginesound->SetRoomType( filter, 1 );
 }
 
 

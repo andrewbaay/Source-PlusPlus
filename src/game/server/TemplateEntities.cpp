@@ -324,7 +324,7 @@ void Templates_StartUniqueInstance( void )
 //			entity IO fixup. Fill out the pMapData with a copy of the template
 //			with unique key/values where the template requires them.
 //-----------------------------------------------------------------------------
-const char *Templates_GetEntityIOFixedMapData( int iIndex )
+char *Templates_GetEntityIOFixedMapData( int iIndex )
 {
 	Assert( Templates_IndexRequiresEntityIOFixup( iIndex ) );
 

@@ -1847,11 +1847,11 @@ bool CBaseServerVehicle::PlayCrashSound( float speed )
 {
 	int i;
 	float delta = 0;
-	float absSpeed = fabsf(speed);
-	float absLastSpeed = fabsf(m_lastSpeed);
+	float absSpeed = fabs(speed);
+	float absLastSpeed = fabs(m_lastSpeed);
 	if ( absLastSpeed > absSpeed )
 	{
-		delta = fabsf(m_lastSpeed - speed);
+		delta = fabs(m_lastSpeed - speed);
 	}
 	
 	float rumble = delta / 8.0f;

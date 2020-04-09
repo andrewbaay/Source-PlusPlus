@@ -13,7 +13,6 @@
 #include "baseentity.h"
 #include "entityoutput.h"
 #include "studio.h"
-#include "datacache/imdlcache.h"
 #include "datacache/idatacache.h"
 #include "tier0/threadtools.h"
 
@@ -84,14 +83,12 @@ public:
 	virtual void	StudioFrameAdvance(); // advance animation frame to some time in the future
 	void StudioFrameAdvanceManual( float flInterval );
 	bool	IsValidSequence( int iSequence );
-	virtual void	ReachedEndOfSequence() { return; }
 
-	inline float					GetPlaybackRate() const;
+	inline float					GetPlaybackRate();
 	inline void						SetPlaybackRate( float rate );
 
 	inline int GetSequence() { return m_nSequence; }
 	virtual void SetSequence(int nSequence);
-	virtual void OnSequenceSet( int nOldSequence ) {}
 	/* inline */ void ResetSequence(int nSequence);
 	// FIXME: push transitions support down into CBaseAnimating?
 	virtual bool IsActivityFinished( void ) { return m_bSequenceFinished; }
@@ -144,7 +141,6 @@ public:
 	bool HasAnimEvent( int nSequence, int nEvent );
 	virtual	void DispatchAnimEvents ( CBaseAnimating *eventHandler ); // Handle events that have happend since last time called up until X seconds into the future
 	virtual void HandleAnimEvent( animevent_t *pEvent );
-	virtual bool HandleBehaviorAnimEvent( animevent_t *pEvent ) { return false; }
 
 	int		LookupPoseParameter( CStudioHdr *pStudioHdr, const char *szName );
 	inline int	LookupPoseParameter( const char *szName ) { return LookupPoseParameter(GetModelPtr(), szName); }
@@ -206,13 +202,8 @@ public:
 
 	const char *GetBodygroupName( int iGroup );
 	int FindBodygroupByName( const char *name );
-	const char *GetBodygroupPartName( int iGroup, int iPart );
 	int GetBodygroupCount( int iGroup );
 	int GetNumBodyGroups( void );
-	int CountBodyGroupVariants( int group );
-	int FindBodyGroupVariant( int group, int variant );	///< Find undamaged bodygroup part index
-	int FindDamagedBodyGroupVariant( int group );		///< Find a damaged version of the current part for the given bodygroup
-	void RandomizeBodygroups( CUtlVector< const char * >& groups );
 
 	void					SetHitboxSet( int setnum );
 	void					SetHitboxSetByName( const char *setname );
@@ -225,9 +216,6 @@ public:
 	// Computes a box that surrounds all hitboxes
 	bool ComputeHitboxSurroundingBox( Vector *pVecWorldMins, Vector *pVecWorldMaxs );
 	bool ComputeEntitySpaceHitboxSurroundingBox( Vector *pVecWorldMins, Vector *pVecWorldMaxs );
-	
-	// Computes a box that surrounds a single hitboxes
-	bool ComputeHitboxSurroundingBox( int iHitbox, Vector *pVecWorldMins, Vector *pVecWorldMaxs );
 	
 	// Clone a CBaseAnimating from another (copies model & sequence data)
 	void CopyAnimationDataFrom( CBaseAnimating *pSource );
@@ -269,7 +257,7 @@ public:
 	virtual bool TestCollision( const Ray_t &ray, unsigned int fContentsMask, trace_t& tr );
 	virtual bool TestHitboxes( const Ray_t &ray, unsigned int fContentsMask, trace_t& tr );
 	class CBoneCache *GetBoneCache( void );
-	virtual void InvalidateBoneCache( void );
+	void InvalidateBoneCache();
 	void InvalidateBoneCacheIfOlderThan( float deltaTime );
 	virtual int DrawDebugTextOverlays( void );
 	
@@ -445,8 +433,6 @@ friend class CBlendingCycler;
 //-----------------------------------------------------------------------------
 inline CStudioHdr *CBaseAnimating::GetModelPtr( void ) 
 { 
-	MDLCACHE_CRITICAL_SECTION();
-
 	if ( IsDynamicModelLoading() )
 		return NULL;
 
@@ -488,7 +474,7 @@ inline void CBaseAnimating::ResetSequence(int nSequence)
 }
 */
 
-inline float CBaseAnimating::GetPlaybackRate() const
+inline float CBaseAnimating::GetPlaybackRate()
 {
 	return m_flPlaybackRate;
 }

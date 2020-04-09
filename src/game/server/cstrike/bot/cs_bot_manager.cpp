@@ -2305,7 +2305,7 @@ void DrawBattlefront( void )
 	{
 		CNavArea *area = TheNavAreas[ it ];
 
-		if ( fabsf(area->GetEarliestOccupyTime( TEAM_TERRORIST ) - area->GetEarliestOccupyTime( TEAM_CT )) > epsilon )
+		if ( fabs(area->GetEarliestOccupyTime( TEAM_TERRORIST ) - area->GetEarliestOccupyTime( TEAM_CT )) > epsilon )
 		{
 			continue;
 		}

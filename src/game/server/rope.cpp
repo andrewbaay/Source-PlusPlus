@@ -37,7 +37,6 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE( CRopeKeyframe, DT_RopeKeyframe )
 	SendPropInt( SENDINFO(m_Slack), 12 ),
 	SendPropInt( SENDINFO(m_RopeLength), 15 ),
 	SendPropInt( SENDINFO(m_fLockedPoints), 4, SPROP_UNSIGNED ),
-	SendPropInt( SENDINFO(m_nChangeCount), 8, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO(m_RopeFlags), ROPE_NUMFLAGS, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO(m_nSegments), 4, SPROP_UNSIGNED ),
 	SendPropBool( SENDINFO(m_bConstrainBetweenEndpoints) ),
@@ -108,7 +107,7 @@ CRopeKeyframe::CRopeKeyframe()
 	m_TextureScale = 4;	// 4:1
 	m_nSegments = 5;
 	m_RopeLength = 20;
-	m_fLockedPoints.Set( ROPE_LOCK_START_POINT | ROPE_LOCK_END_POINT ); // by default, both points are locked
+	m_fLockedPoints = (int) (ROPE_LOCK_START_POINT | ROPE_LOCK_END_POINT); // by default, both points are locked
 	m_flScrollSpeed = 0;
 	m_RopeFlags = ROPE_SIMULATE | ROPE_INITIAL_HANG;
 	m_iRopeMaterialModelIndex = -1;
@@ -202,11 +201,10 @@ CRopeKeyframe* CRopeKeyframe::Create(
 	int iEndAttachment,
 	int ropeWidth,
 	const char *pMaterialName,
-	int numSegments,
-	const char *pClassName
+	int numSegments
 	)
 {
-	CRopeKeyframe *pRet = static_cast<CRopeKeyframe*>( CreateEntityByName( pClassName ) );
+	CRopeKeyframe *pRet = (CRopeKeyframe*)CreateEntityByName( "keyframe_rope" );
 	if( !pRet )
 		return NULL;
 
@@ -220,7 +218,6 @@ CRopeKeyframe* CRopeKeyframe::Create(
 	pRet->SetMaterial( pMaterialName );
 	pRet->m_Width = ropeWidth;
 	pRet->m_nSegments = clamp( numSegments, 2, ROPE_MAX_SEGMENTS );
-	pRet->Spawn();
 
 	return pRet;
 }
@@ -233,11 +230,10 @@ CRopeKeyframe* CRopeKeyframe::CreateWithSecondPointDetached(
 	int ropeWidth,
 	const char *pMaterialName,
 	int numSegments,
-	bool bInitialHang,
-	const char *pClassName
+	bool bInitialHang
 	)
 {
-	CRopeKeyframe *pRet = static_cast<CRopeKeyframe*>( CreateEntityByName( pClassName ) );
+	CRopeKeyframe *pRet = (CRopeKeyframe*)CreateEntityByName( "keyframe_rope" );
 	if( !pRet )
 		return NULL;
 
@@ -269,7 +265,7 @@ void CRopeKeyframe::ActivateStartDirectionConstraints( bool bEnable )
 	}
 	else
 	{
-		m_fLockedPoints.GetForModify() &= ~ROPE_LOCK_START_DIRECTION;
+		m_fLockedPoints &= ~((int)ROPE_LOCK_START_DIRECTION); 
 	}
 }
 
@@ -282,7 +278,7 @@ void CRopeKeyframe::ActivateEndDirectionConstraints( bool bEnable )
 	}
 	else
 	{
-		m_fLockedPoints.GetForModify() &= ~ROPE_LOCK_END_DIRECTION; 
+		m_fLockedPoints &= ~((int)ROPE_LOCK_END_DIRECTION); 
 	}
 }
 
@@ -316,8 +312,8 @@ bool CRopeKeyframe::SetupHangDistance( float flHangDist )
 	float flSlack, flLen;
 	CalcRopeStartingConditions( v1, v2, ROPE_MAX_SEGMENTS, flHangDist, &flLen, &flSlack );
 
-	m_RopeLength = static_cast<int>( flLen );
-	m_Slack = static_cast<int>( flSlack );
+	m_RopeLength = (int)flLen;
+	m_Slack = (int)flSlack;
 	return true;
 }
 
@@ -327,30 +323,12 @@ void CRopeKeyframe::Init()
 	SetLocalAngles( vec3_angle );
 	RecalculateLength();
 
-	m_nSegments = clamp( m_nSegments.Get(), 2, ROPE_MAX_SEGMENTS );
+	m_nSegments = clamp( (int) m_nSegments, 2, ROPE_MAX_SEGMENTS );
 
 	UpdateBBox( true );
 
 	m_bStartPointValid = (m_hStartPoint.Get() != NULL);
 	m_bEndPointValid = (m_hEndPoint.Get() != NULL);
-
-	// Sanity-check the rope texture scale before it goes over the wire
-	if ( m_TextureScale < 0.1f )
-	{
-		Vector origin = GetAbsOrigin();
-		GetEndPointPos( 0, origin );
-		DevMsg( "move_rope has TextureScale less than 0.1 at (%2.2f, %2.2f, %2.2f)\n",
-			origin.x, origin.y, origin.z );
-		m_TextureScale = 0.1f;
-	}
-	else if ( m_TextureScale > 10.0f )
-	{
-		Vector origin = GetAbsOrigin();
-		GetEndPointPos( 0, origin );
-		DevMsg( "move_rope has TextureScale greater than 10 at (%2.2f, %2.2f, %2.2f)\n",
-			origin.x, origin.y, origin.z );
-		m_TextureScale = 10.0f;
-	}
 }
 
 
@@ -379,7 +357,7 @@ void CRopeKeyframe::Activate()
 		// If we're from the map file, and we don't have a target ent, and 
 		// "Start Dangling" wasn't set, then this rope keyframe doesn't have
 		// any rope coming out of it.
-		if ( m_fLockedPoints.Get() & ROPE_LOCK_END_POINT )
+		if ( m_fLockedPoints & (int)ROPE_LOCK_END_POINT )
 		{
 			m_RopeFlags &= ~ROPE_SIMULATE;
 		}
@@ -549,7 +527,7 @@ void CRopeKeyframe::PropagateForce(CBaseEntity *pActivator, CBaseEntity *pCaller
 
 	// UNDONE: Doesn't deal with intermediate loops
 	// Propagate to next segment
-	CRopeKeyframe *pNextLink = dynamic_cast<CRopeKeyframe*>(m_hEndPoint.Get());
+	CRopeKeyframe *pNextLink = dynamic_cast<CRopeKeyframe*>((CBaseEntity *)m_hEndPoint);
 	if (pNextLink && pNextLink != pFirstLink)
 	{
 		pNextLink->PropagateForce(pActivator, pCaller, pFirstLink, x, y, z);
@@ -607,8 +585,6 @@ bool CRopeKeyframe::Break( void )
 //-----------------------------------------------------------------------------
 void CRopeKeyframe::NotifyPositionChanged( CBaseEntity *pEntity )
 {
-	++m_nChangeCount;
-
 	// Update our bbox?
 	UpdateBBox( false );
 
@@ -674,12 +650,10 @@ void CRopeKeyframe::EnableCollision()
 void CRopeKeyframe::EnableWind( bool bEnable )
 {
 	int flag = 0;
-	if ( bEnable )
-	{
-		flag |= ROPE_USE_WIND;
-	}
+	if ( !bEnable )
+		flag |= ROPE_NO_WIND;
 
-	if ( (m_RopeFlags & ROPE_USE_WIND) != flag )
+	if ( (m_RopeFlags & ROPE_NO_WIND) != flag )
 	{
 		m_RopeFlags |= flag;
 	}
@@ -691,27 +665,22 @@ bool CRopeKeyframe::KeyValue( const char *szKeyName, const char *szValue )
 	if( stricmp( szKeyName, "Breakable" ) == 0 )
 	{
 		if( atoi( szValue ) == 1 )
-			m_RopeFlags.GetForModify() |= ROPE_BREAKABLE;
+			m_RopeFlags |= ROPE_BREAKABLE;
 	}
 	else if( stricmp( szKeyName, "Collide" ) == 0 )
 	{
 		if( atoi( szValue ) == 1 )
-			m_RopeFlags.GetForModify() |= ROPE_COLLIDE;
+			m_RopeFlags |= ROPE_COLLIDE;
 	}
 	else if( stricmp( szKeyName, "Barbed" ) == 0 )
 	{
 		if( atoi( szValue ) == 1 )
-			m_RopeFlags.GetForModify() |= ROPE_BARBED;
-	}
-	else if( stricmp( szKeyName, "UseWind" ) == 0 )
-	{
-		if( atoi( szValue ) == 1 )
-			m_RopeFlags.GetForModify() |= ROPE_USE_WIND;
+			m_RopeFlags |= ROPE_BARBED;
 	}
 	else if( stricmp( szKeyName, "Dangling" ) == 0 )
 	{
 		if( atoi( szValue ) == 1 )
-			m_fLockedPoints.GetForModify() &= ~ROPE_LOCK_END_POINT; // detach our dest point
+			m_fLockedPoints &= ~ROPE_LOCK_END_POINT; // detach our dest point
 		
 		return true;
 	}
@@ -719,11 +688,11 @@ bool CRopeKeyframe::KeyValue( const char *szKeyName, const char *szValue )
 	{
 		int iType = atoi( szValue );
 		if( iType == 0 )
-			m_nSegments.Set( ROPE_MAX_SEGMENTS );
+			m_nSegments = ROPE_MAX_SEGMENTS;
 		else if( iType == 1 )
-			m_nSegments.Set( ROPE_TYPE1_NUMSEGMENTS );
+			m_nSegments = ROPE_TYPE1_NUMSEGMENTS;
 		else
-			m_nSegments.Set( ROPE_TYPE2_NUMSEGMENTS );
+			m_nSegments = ROPE_TYPE2_NUMSEGMENTS;
 	}
 	else if ( stricmp( szKeyName, "RopeShader" ) == 0 )
 	{
@@ -731,15 +700,15 @@ bool CRopeKeyframe::KeyValue( const char *szKeyName, const char *szValue )
 		int iShader = atoi( szValue );
 		if ( iShader == 0 )
 		{
-			m_strRopeMaterialModel = MAKE_STRING( "cable/cable.vmt" );
+			m_iRopeMaterialModelIndex = PrecacheModel( "cable/cable.vmt" );
 		}
 		else if ( iShader == 1 )
 		{
-			m_strRopeMaterialModel = MAKE_STRING( "cable/rope.vmt" );
+			m_iRopeMaterialModelIndex = PrecacheModel( "cable/rope.vmt" );
 		}
 		else
 		{
-			m_strRopeMaterialModel = MAKE_STRING( "cable/chain.vmt" );
+			m_iRopeMaterialModelIndex = PrecacheModel( "cable/chain.vmt" );
 		}
 	}
 	else if ( stricmp( szKeyName, "RopeMaterial" ) == 0 )
@@ -756,10 +725,15 @@ bool CRopeKeyframe::KeyValue( const char *szKeyName, const char *szValue )
 			SetMaterial( str );
 		}
 	}
-	else
-		return BaseClass::KeyValue( szKeyName, szValue );
+	else if ( stricmp( szKeyName, "NoWind" ) == 0 )
+	{
+		if ( atoi( szValue ) == 1 )
+		{
+			m_RopeFlags |= ROPE_NO_WIND;
+		}
+	}
 	
-	return true;
+	return BaseClass::KeyValue( szKeyName, szValue );
 }
 
 
@@ -775,6 +749,7 @@ void CRopeKeyframe::InputSetScrollSpeed( inputdata_t &inputdata )
 void CRopeKeyframe::SetMaterial( const char *pName )
 {
 	m_strRopeMaterialModel = AllocPooledString( pName );
+	m_iRopeMaterialModelIndex = PrecacheModel( STRING( m_strRopeMaterialModel ) );
 }
 
 int CRopeKeyframe::UpdateTransmitState()
@@ -785,3 +760,7 @@ int CRopeKeyframe::UpdateTransmitState()
 	// as they come in and out of the PVS.
 	return SetTransmitState( FL_EDICT_ALWAYS );
 }
+
+
+
+		

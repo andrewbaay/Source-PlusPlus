@@ -1,11 +1,9 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
-// Purpose:
+// Purpose: 
 //
 //=============================================================================
 #include "cbase.h"
-
-#include "tier0/memdbgon.h"
 
 extern bool g_bUseCustomAutoExposureMin;
 extern bool g_bUseCustomAutoExposureMax;
@@ -18,7 +16,7 @@ extern float g_flCustomBloomScaleMinimum;
 EHANDLE g_hTonemapControllerInUse = NULL;
 
 //-----------------------------------------------------------------------------
-// Purpose:
+// Purpose: 
 //-----------------------------------------------------------------------------
 class C_EnvTonemapController : public C_BaseEntity
 {
@@ -40,8 +38,6 @@ private:
 	float m_flCustomBloomScaleMinimum;
 private:
 	C_EnvTonemapController( const C_EnvTonemapController & );
-
-	friend void GetTonemapSettingsFromEnvTonemapController();
 };
 
 IMPLEMENT_CLIENTCLASS_DT( C_EnvTonemapController, DT_EnvTonemapController, CEnvTonemapController )
@@ -55,7 +51,7 @@ IMPLEMENT_CLIENTCLASS_DT( C_EnvTonemapController, DT_EnvTonemapController, CEnvT
 END_RECV_TABLE()
 
 //-----------------------------------------------------------------------------
-// Purpose:
+// Purpose: 
 //-----------------------------------------------------------------------------
 C_EnvTonemapController::C_EnvTonemapController( void )
 {
@@ -69,7 +65,7 @@ C_EnvTonemapController::C_EnvTonemapController( void )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose:
+// Purpose: 
 //-----------------------------------------------------------------------------
 C_EnvTonemapController::~C_EnvTonemapController( void )
 {
@@ -82,7 +78,7 @@ C_EnvTonemapController::~C_EnvTonemapController( void )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose:
+// Purpose: 
 //-----------------------------------------------------------------------------
 void C_EnvTonemapController::OnDataChanged( DataUpdateType_t updateType )
 {
@@ -99,24 +95,3 @@ void C_EnvTonemapController::OnDataChanged( DataUpdateType_t updateType )
 	g_hTonemapControllerInUse = this;
 }
 
-void GetTonemapSettingsFromEnvTonemapController()
-{
-	C_BasePlayer *localPlayer = C_BasePlayer::GetLocalPlayer();
-	if ( localPlayer )
-	{
-		if ( C_EnvTonemapController *tonemapController = dynamic_cast< C_EnvTonemapController * >(localPlayer->m_hTonemapController.Get()) )
-		{
-			g_bUseCustomAutoExposureMin = tonemapController->m_bUseCustomAutoExposureMin;
-			g_bUseCustomAutoExposureMax = tonemapController->m_bUseCustomAutoExposureMax;
-			g_bUseCustomBloomScale = tonemapController->m_bUseCustomBloomScale;
-			g_flCustomAutoExposureMin = tonemapController->m_flCustomAutoExposureMin;
-			g_flCustomAutoExposureMax = tonemapController->m_flCustomAutoExposureMax;
-			g_flCustomBloomScale = tonemapController->m_flCustomBloomScale;
-			g_flCustomBloomScaleMinimum = tonemapController->m_flCustomBloomScaleMinimum;
-			return;
-		}
-	}
-
-	g_bUseCustomAutoExposureMax = false;
-	g_bUseCustomBloomScale = false;
-}

@@ -248,9 +248,7 @@ public:
     void							*operator new( size_t stAllocateBlock, int nBlockUse, const char *pFileName, int nLine );
 	void							*operator new[]( size_t stAllocateBlock, int nBlockUse, const char *pFileName, int nLine );
 	void							operator delete( void *pMem );
-	void							operator delete[]( void *pMem );
-	void							operator delete( void *pMem, int nBlockUse, const char *pFileName, int nLine );
-	void							operator delete[]( void *pMem, int nBlockUse, const char *pFileName, int nLine );
+	void							operator delete( void *pMem, int nBlockUse, const char *pFileName, int nLine ) { operator delete( pMem ); }
 
 	// This just picks one of the routes to IClientUnknown.
 	IClientUnknown*					GetIClientUnknown()	{ return this; }

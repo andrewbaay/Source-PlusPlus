@@ -479,7 +479,7 @@ class CUtlHashFastGenericHash
 public:
 	static int Hash( int key, int bucketMask )
 	{
-		return ( HashInt( key ) & bucketMask );
+		return ( HashIntConventional( key ) & bucketMask );
 	}
 };
 
@@ -727,7 +727,7 @@ class CUtlHashFixedGenericHash
 public:
 	static int Hash( int key, int bucketMask )
 	{
-		int hash = HashInt( key );
+		int hash = HashIntConventional( key );
 		if ( NUM_BUCKETS <= USHRT_MAX )
 		{
 			hash ^= ( hash >> 16 );

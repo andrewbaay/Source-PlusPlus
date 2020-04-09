@@ -148,7 +148,10 @@ void ReloadParticleEffectsInList( IFileList *pFilesToReload )
 #endif
 	if ( pszMapName && pszMapName[0] )
 	{
-		ParseParticleEffectsMap( pszMapName, true, pFilesToReload );
+		char mapname[MAX_MAP_NAME];
+		Q_FileBase( pszMapName, mapname, sizeof( mapname ) );
+		Q_strlower( mapname );
+		ParseParticleEffectsMap( mapname, true, pFilesToReload );
 	}
 
 	if ( bReloadAll )
@@ -166,11 +169,6 @@ void ParseParticleEffectsMap( const char *pMapName, bool bLoadSheets, IFileList 
 {
 	MEM_ALLOC_CREDIT();
 
-	char mapname[MAX_MAP_NAME];
-	Q_FileBase( pMapName, mapname, sizeof( mapname ) );
-	Q_strlower( mapname );
-	pMapName = mapname;
-
 	CUtlVector<CUtlString> files;
 	char szMapManifestFilename[MAX_PATH];
 
@@ -182,7 +180,7 @@ void ParseParticleEffectsMap( const char *pMapName, bool bLoadSheets, IFileList 
 	}
 
 	// Open the manifest file, and read the particles specified inside it
-	KeyValues *manifest = new KeyValues( "particles_manifest" );
+	KeyValues *manifest = new KeyValues( szMapManifestFilename );
 	if ( manifest->LoadFromFile( filesystem, szMapManifestFilename, "GAME" ) )
 	{
 		DevMsg( "Successfully loaded particle effects manifest '%s' for map '%s'\n", szMapManifestFilename, pMapName );
@@ -267,17 +265,6 @@ void DispatchParticleEffect( const char *pszParticleName, ParticleAttachment_t i
 	int iAttachment = -1;
 	if ( pEntity && pEntity->GetBaseAnimating() )
 	{
-		if ( iAttachType == PATTACH_BONE_FOLLOW )
-		{
-			iAttachment = pEntity->GetBaseAnimating()->LookupBone( pszAttachmentName );
-			if ( iAttachment < 0 )
-			{
-				Warning("Model '%s' doesn't have bone '%s' to attach particle system '%s' to.\n", STRING(pEntity->GetBaseAnimating()->GetModelName()), pszAttachmentName, pszParticleName );
-				return;
-			}
-		}
-		else
-		{
 		// Find the attachment point index
 		iAttachment = pEntity->GetBaseAnimating()->LookupAttachment( pszAttachmentName );
 		if ( iAttachment <= 0 )
@@ -285,7 +272,6 @@ void DispatchParticleEffect( const char *pszParticleName, ParticleAttachment_t i
 			Warning("Model '%s' doesn't have attachment '%s' to attach particle system '%s' to.\n", STRING(pEntity->GetBaseAnimating()->GetModelName()), pszAttachmentName, pszParticleName );
 			return;
 		}
-	}
 	}
 
 	DispatchParticleEffect( pszParticleName, iAttachType, pEntity, iAttachment, bResetAllParticlesOnEntity );
@@ -337,7 +323,7 @@ void DispatchParticleEffect( const char *pszParticleName, ParticleAttachment_t i
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void DispatchParticleEffect( const char *pszParticleName, ParticleAttachment_t iAttachType, CBaseEntity *pEntity, const char *pszAttachmentName, const Vector& vecColor1, const Vector& vecColor2, bool bUseColors, bool bResetAllParticlesOnEntity )
+void DispatchParticleEffect( const char *pszParticleName, ParticleAttachment_t iAttachType, CBaseEntity *pEntity, const char *pszAttachmentName, Vector vecColor1, Vector vecColor2, bool bUseColors, bool bResetAllParticlesOnEntity )
 {
 	int iAttachment = -1;
 	if ( pEntity && pEntity->GetBaseAnimating() )
@@ -397,7 +383,7 @@ void DispatchParticleEffect( const char *pszParticleName, ParticleAttachment_t i
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void DispatchParticleEffect( int iEffectIndex, const Vector& vecOrigin, const Vector& vecStart, const QAngle& vecAngles, CBaseEntity *pEntity, bool bUseColor, const Vector& color1, const Vector& color2 )
+void DispatchParticleEffect( int iEffectIndex, Vector vecOrigin, Vector vecStart, QAngle vecAngles, CBaseEntity *pEntity )
 {
 	CEffectData	data;
 
@@ -425,13 +411,6 @@ void DispatchParticleEffect( int iEffectIndex, const Vector& vecOrigin, const Ve
 #endif
 	}
 
-	if ( bUseColor )
-	{
-		data.m_bCustomColors = true;
-		data.m_CustomColors.m_vecColor1 = color1;
-		data.m_CustomColors.m_vecColor2 = color2;
-	}
-
 	DispatchEffect( "ParticleEffect", data );
 }
 
@@ -439,7 +418,7 @@ void DispatchParticleEffect( int iEffectIndex, const Vector& vecOrigin, const Ve
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void DispatchParticleEffect( const char *pszParticleName, const Vector& vecOrigin, const QAngle& vecAngles, const Vector& vecColor1, const Vector& vecColor2, bool bUseColors, CBaseEntity *pEntity, int iAttachType )
+void DispatchParticleEffect( const char *pszParticleName, Vector vecOrigin, QAngle vecAngles, Vector vecColor1, Vector vecColor2, bool bUseColors, CBaseEntity *pEntity, int iAttachType )
 {
 	int iEffectIndex = GetParticleSystemIndex( pszParticleName );
 
@@ -482,7 +461,7 @@ void DispatchParticleEffect( const char *pszParticleName, const Vector& vecOrigi
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void DispatchParticleEffect( const char *pszParticleName, const Vector& vecOrigin, const QAngle& vecAngles, CBaseEntity *pEntity )
+void DispatchParticleEffect( const char *pszParticleName, Vector vecOrigin, QAngle vecAngles, CBaseEntity *pEntity )
 {
 	int iIndex = GetParticleSystemIndex( pszParticleName );
 	DispatchParticleEffect( iIndex, vecOrigin, vecOrigin, vecAngles, pEntity );
@@ -491,67 +470,10 @@ void DispatchParticleEffect( const char *pszParticleName, const Vector& vecOrigi
 //-----------------------------------------------------------------------------
 // Purpose: Yet another overload, lets us supply vecStart
 //-----------------------------------------------------------------------------
-void DispatchParticleEffect( const char *pszParticleName, const Vector& vecOrigin, const Vector& vecStart, const QAngle& vecAngles, CBaseEntity *pEntity, bool bUseColor, const Vector& color1, const Vector& color2 )
+void DispatchParticleEffect( const char *pszParticleName, Vector vecOrigin, Vector vecStart, QAngle vecAngles, CBaseEntity *pEntity )
 {
 	int iIndex = GetParticleSystemIndex( pszParticleName );
-	DispatchParticleEffect( iIndex, vecOrigin, vecStart, vecAngles, pEntity, bUseColor, color1, color2 );
-}
-
-void DispatchParticleEffect(const char *pszParticleName, const Vector& vecStart, ParticleAttachment_t iAttachType, CBaseEntity *pEntity, const char *pszAttachmentName, bool bResetAllParticlesOnEntity)
-{
-	CEffectData	data;
-	data.m_nHitBox = GetParticleSystemIndex(pszParticleName);
-
-	if (pEntity)
-	{
-#ifdef CLIENT_DLL
-		C_BaseCombatWeapon *pWpn = dynamic_cast<C_BaseCombatWeapon *>(pEntity);
-		if (pWpn && pWpn->ShouldDrawUsingViewModel())
-		{
-			C_BasePlayer *player = ToBasePlayer(pWpn->GetOwner());
-
-			// Use GetRenderedWeaponModel() instead?
-			C_BaseViewModel *pViewModel = player ? player->GetViewModel(0) : NULL;
-			if (pViewModel)
-			{
-				pEntity = pViewModel;
-			}
-		}
-
-		data.m_hEntity = pEntity;
-#else
-		data.m_nEntIndex = pEntity->entindex();
-#endif
-		data.m_fFlags |= PARTICLE_DISPATCH_FROM_ENTITY;
-		data.m_vOrigin = pEntity->GetAbsOrigin();
-		data.m_bControlPoint1 = true;
-		data.m_ControlPoint1.m_eParticleAttachment = PATTACH_WORLDORIGIN;
-		data.m_ControlPoint1.m_vecOffset = vecStart;
-		data.m_vAngles = pEntity->GetAbsAngles();
-	}
-
-	int iAttachmentPoint = pEntity->GetBaseAnimating()->LookupAttachment(pszAttachmentName);
-
-	data.m_nDamageType = iAttachType;
-	data.m_nAttachmentIndex = iAttachmentPoint;
-
-	if (bResetAllParticlesOnEntity)
-	{
-		data.m_fFlags |= PARTICLE_DISPATCH_RESET_PARTICLES;
-	}
-
-#ifdef GAME_DLL
-	if ((data.m_fFlags & PARTICLE_DISPATCH_FROM_ENTITY) != 0 &&
-		(iAttachType == PATTACH_ABSORIGIN_FOLLOW || iAttachType == PATTACH_POINT_FOLLOW || iAttachType == PATTACH_ROOTBONE_FOLLOW))
-	{
-		CBroadcastRecipientFilter filter;
-		DispatchEffect("ParticleEffect", data, filter);
-	}
-	else
-#endif
-	{
-		DispatchEffect("ParticleEffect", data);
-	}
+	DispatchParticleEffect( iIndex, vecOrigin, vecStart, vecAngles, pEntity );
 }
 
 //-----------------------------------------------------------------------------

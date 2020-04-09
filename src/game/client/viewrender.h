@@ -242,6 +242,9 @@ protected:
 	// Purpose: Builds render lists for renderables. Called once for refraction, once for over water
 	void			BuildRenderableRenderLists( int viewID );
 
+	// More concise version of the above BuildRenderableRenderLists().  Called for shadow depth map rendering
+	void			BuildShadowDepthRenderableRenderLists();
+
 	 void			DrawWorld( float waterZAdjust );
 
 	// Draws all opaque/translucent renderables in leaves that were rendered
@@ -350,7 +353,7 @@ protected:
 
 	virtual IReplayScreenshotSystem *GetReplayScreenshotSystem() { return this; }
 
-	virtual void	PostSimulate();
+	//virtual void	PostSimulate();
 
 	// IReplayScreenshot implementation
 	virtual void	WriteReplayScreenshot( WriteReplayScreenshotParams_t &params );

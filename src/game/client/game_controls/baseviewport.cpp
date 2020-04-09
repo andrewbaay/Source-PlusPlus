@@ -11,6 +11,8 @@
 // $NoKeywords: $
 //=============================================================================//
 
+#pragma warning( disable : 4800  )  // disable forcing int to bool performance warning
+
 #include "cbase.h"
 #include <cdll_client_int.h>
 #include <cdll_util.h>
@@ -56,8 +58,6 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
-
-#pragma warning( disable : 4800  )  // disable forcing int to bool performance warning
 
 IViewPort *gViewPortInterface = NULL;
 
@@ -299,7 +299,7 @@ IViewPortPanel* CBaseViewport::CreatePanelByName(const char *szPanelName)
 #endif	// TF_CLIENT_DLL
 #endif
 
-	else if ( Q_strcmp(PANEL_COMMENTARY_MODELVIEWER, szPanelName) == 0 )
+	if ( Q_strcmp(PANEL_COMMENTARY_MODELVIEWER, szPanelName) == 0 )
 	{
 		newpanel = new CCommentaryModelViewer( this );
 	}

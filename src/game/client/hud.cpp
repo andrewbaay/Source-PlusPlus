@@ -217,9 +217,9 @@ CHudTexture& CHudTexture::operator =( const CHudTexture& src )
 
 CHudTexture::~CHudTexture()
 {
-	if ( vgui::surface() && vgui::surface()->IsTextureIDValid( textureId ) )
+	if ( vgui::surface() && textureId != -1 )
 	{
-		vgui::surface()->DeleteTextureByID( textureId );
+		vgui::surface()->DestroyTextureID( textureId );
 		textureId = -1;
 	}
 }
@@ -584,14 +584,14 @@ void CHudTexture::DrawSelf( int x, int y, const Color& clr ) const
 	DrawSelf( x, y, Width(), Height(), clr );
 }
 
-void CHudTexture::DrawSelf( int x, int y, int w, int h, const Color& clr, vgui::FontDrawType_t type ) const
+void CHudTexture::DrawSelf( int x, int y, int w, int h, const Color& clr ) const
 {
 	if ( bRenderUsingFont )
 	{
 		vgui::surface()->DrawSetTextFont( hFont );
 		vgui::surface()->DrawSetTextColor( clr );
 		vgui::surface()->DrawSetTextPos( x, y );
-		vgui::surface()->DrawUnicodeChar( cCharacterInFont, type );
+		vgui::surface()->DrawUnicodeChar( cCharacterInFont );
 	}
 	else
 	{
@@ -754,7 +754,7 @@ CHudTexture *CHud::AddUnsearchableHudIconToList( CHudTexture& texture )
 		return icon;
 	}
 
-	CHudTexture *newTexture = g_HudTextureMemoryPool.Alloc();
+	CHudTexture *newTexture = ( CHudTexture * )g_HudTextureMemoryPool.Alloc();
 	*newTexture = texture;
 
 	SetupNewHudTexture( newTexture );
@@ -774,7 +774,7 @@ CHudTexture *CHud::AddSearchableHudIconToList( CHudTexture& texture )
 		return icon;
 	}
 
-	CHudTexture *newTexture = g_HudTextureMemoryPool.Alloc();
+	CHudTexture *newTexture = ( CHudTexture * )g_HudTextureMemoryPool.Alloc();
 	*newTexture = texture;
 
 	SetupNewHudTexture( newTexture );
@@ -948,8 +948,6 @@ float CHud::GetFOVSensitivityAdjust()
 bool CHud::IsHidden( int iHudFlags )
 {
 	// Not in game?
-	if ( engine->IsLevelMainMenuBackground() )
-		return true;
 	if ( !engine->IsInGame() )
 		return true;
 
@@ -1038,9 +1036,9 @@ bool CHud::LockRenderGroup( int iGroupIndex, CHudElement *pLocker /* = NULL */ )
 			bool bFound = false;
 			// See if we have it locked already
 			int iNumLockers = group->m_pLockingElements.Count();
-			for ( int j=0;j<iNumLockers;j++ )
+			for ( int i=0;i<iNumLockers;i++ )
 			{
-				if ( pLocker == group->m_pLockingElements.Element(j) )
+				if ( pLocker == group->m_pLockingElements.Element(i) )
 				{
 					bFound = true;
 					break;
@@ -1083,11 +1081,11 @@ bool CHud::UnlockRenderGroup( int iGroupIndex, CHudElement *pLocker /* = NULL */
 		}
 
 		int iNumLockers = group->m_pLockingElements.Count();
-		for ( int j=0;j<iNumLockers;j++ )
+		for ( int i=0;i<iNumLockers;i++ )
 		{
-			if ( pLocker == group->m_pLockingElements.Element(j) )
+			if ( pLocker == group->m_pLockingElements.Element(i) )
 			{
-				group->m_pLockingElements.RemoveAt( j );
+				group->m_pLockingElements.RemoveAt( i );
 				return true;
 			}
 		}

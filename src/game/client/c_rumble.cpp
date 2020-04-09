@@ -220,7 +220,7 @@ void GenerateSineWaveEffect( RumbleWaveform_t *pWaveform, const WaveGenParams_t 
 	for( int i = 0 ; i < NUM_WAVE_SAMPLES ; i++ )
 	{
 		float radians = DEG2RAD(degrees);
-		float value = fabsf( sin(radians) );
+		float value = fabs( sin(radians) );
 
 		value *= params.amplitudescale;
 
@@ -751,7 +751,7 @@ void CRumbleEffects::UpdateEffects( float curtime )
 	{
 		if( m_flScreenShake < 0.0f )
 		{
-			shakeLeft = fabsf( m_flScreenShake );
+			shakeLeft = fabs( m_flScreenShake );
 		}
 		else
 		{

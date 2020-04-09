@@ -305,7 +305,7 @@ void CHudDamageIndicator::CalcDamageDirection( const Vector &vecFrom )
 	}
 	else
 	{
-		float f = fabsf( flFront );
+		float f = fabs( flFront );
 		if ( f > 0.3 )
 			m_flAttackRear = max( m_flAttackRear, f );
 	}
@@ -317,7 +317,7 @@ void CHudDamageIndicator::CalcDamageDirection( const Vector &vecFrom )
 	}
 	else
 	{
-		float f = fabsf( flSide );
+		float f = fabs( flSide );
 		if ( f > 0.3 )
 			m_flAttackLeft = max( m_flAttackLeft, f );
 	}

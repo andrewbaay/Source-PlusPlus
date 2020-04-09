@@ -201,7 +201,7 @@ bool IGameSystem::InitAllSystems()
 
 			pSystem = pSystem->m_pNext;
 		}
-		s_pPerFrameSystemList = NULL;
+		s_pSystemList = NULL;
 	}
 	// Now remember that we are initted so new CAutoGameSystems will add themselves automatically.
 	s_bSystemsInitted = true;

@@ -615,7 +615,7 @@ void CUtlBuffer::GetStringInternal( char *pString, size_t maxLenInChars )
 		return;
 	}
 
-	Assert( maxLenInChars != 0 );
+	//Assert( maxLenInChars != 0 );
 
 	if ( maxLenInChars == 0 )
 	{
@@ -903,7 +903,6 @@ void CUtlBuffer::SeekGet( SeekType_t type, int offset )
 // Parse...
 //-----------------------------------------------------------------------------
 
-#pragma warning ( push )
 #pragma warning ( disable : 4706 )
 
 int CUtlBuffer::VaScanf( const char* pFmt, va_list list )
@@ -1075,7 +1074,7 @@ int CUtlBuffer::VaScanf( const char* pFmt, va_list list )
 	return numScanned;
 }
 
-#pragma warning ( pop )
+#pragma warning ( default : 4706 )
 
 int CUtlBuffer::Scanf( const char* pFmt, ... )
 {

@@ -859,6 +859,8 @@ void CNPC_Dog::ThrowObject( const char *pAttachmentName )
 				}
 
 				vThrowDirection = vecToss + ( m_hThrowTarget->GetSmoothedVelocity() / 2 );
+							
+				Vector vLinearDrag;
 
 				Vector unitVel = vThrowDirection;
 				VectorNormalize( unitVel );

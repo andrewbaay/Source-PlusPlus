@@ -51,12 +51,12 @@ void RayTracingEnvironment::RenderScene(
 	int width, int height,								   // width and height of desired rendering
 	int stride,											 // actual width in pixels of target buffer
 	uint32 *output_buffer,									// pointer to destination 
-	const Vector& CameraOrigin,							// eye position
-	const Vector& ULCorner,								// word space coordinates of upper left
+	Vector CameraOrigin,									// eye position
+	Vector ULCorner,										// word space coordinates of upper left
 															// monitor corner
-	const Vector& URCorner,								// top right corner
-	const Vector& LLCorner,								// lower left
-	const Vector& LRCorner,								// lower right
+	Vector URCorner,										// top right corner
+	Vector LLCorner,										// lower left
+	Vector LRCorner,										// lower right
 	RayTraceLightingMode_t lmode)
 {
 	// first, compute deltas
@@ -305,8 +305,8 @@ static unsigned int GetSignMask(Vector const &v)
 
 inline void RayTracingEnvironment::FlushStreamEntry(RayStream &s,int msk)
 {
-	Assert(msk>=0);
-	Assert(msk<8);
+	assert(msk>=0);
+	assert(msk<8);
 	fltx4 tmax=s.PendingRays[msk].direction.length();
 	fltx4 scl=ReciprocalSaturateSIMD(tmax);
 	s.PendingRays[msk].direction*=scl;					// normalize
@@ -333,10 +333,10 @@ void RayTracingEnvironment::AddToRayStream(RayStream &s,
 	Vector delta=end;
 	delta-=start;
 	int msk=GetSignMask(delta);
-	Assert(msk>=0);
-	Assert(msk<8);
+	assert(msk>=0);
+	assert(msk<8);
 	int pos=s.n_in_stream[msk];
-	Assert(pos<4);
+	assert(pos<4);
 	s.PendingRays[msk].origin.X(pos)=start.x;
 	s.PendingRays[msk].origin.Y(pos)=start.y;
 	s.PendingRays[msk].origin.Z(pos)=start.z;

@@ -11,7 +11,7 @@
 #include "filesystem.h"
 
 
-#define SLIDESHOW_LIST_BUFFER_MAX 8192U
+#define SLIDESHOW_LIST_BUFFER_MAX 8192
 
 
 struct SlideKeywordList_t

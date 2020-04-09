@@ -17,8 +17,6 @@
 
 #define SOUNDSCAPE_MANIFEST_FILE				"scripts/soundscapes_manifest.txt"
 
-ConVar debug_print_soundscapes( "debug_print_soundscapes", "0", FCVAR_HIDDEN );
-
 CON_COMMAND(soundscape_flush, "Flushes the server & client side soundscapes")
 {
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
@@ -141,9 +139,6 @@ bool CSoundscapeSystem::Init()
 	KeyValues *manifest = new KeyValues( SOUNDSCAPE_MANIFEST_FILE );
 	if ( filesystem->LoadKeyValues( *manifest, IFileSystem::TYPE_SOUNDSCAPE, SOUNDSCAPE_MANIFEST_FILE, "GAME" ) )
 	{
-		if ( debug_print_soundscapes.GetBool() )
-			KeyValuesDumpAsDevMsg( manifest );
-
 		for ( KeyValues *sub = manifest->GetFirstSubKey(); sub != NULL; sub = sub->GetNextKey() )
 		{
 			if ( !Q_stricmp( sub->GetName(), "file" ) )

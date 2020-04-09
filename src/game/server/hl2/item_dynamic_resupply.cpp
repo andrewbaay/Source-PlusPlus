@@ -130,6 +130,8 @@ static DynamicResupplyHandle_t	g_MasterResupply;
 // Save/load: 
 //-----------------------------------------------------------------------------
 
+#pragma warning( push )
+#pragma warning( disable : 4838 )
 BEGIN_DATADESC( CItem_DynamicResupply )
 
 	DEFINE_THINKFUNC( CheckPVSThink ),
@@ -159,7 +161,7 @@ BEGIN_DATADESC( CItem_DynamicResupply )
 //	DEFINE_ARRAY( m_flDesiredAmmo, FIELD_FLOAT,  NUM_AMMO_ITEMS  ),
 
 END_DATADESC()
-
+#pragma warning( pop )
 
 //-----------------------------------------------------------------------------
 // Purpose: 

@@ -11,8 +11,6 @@
 // $NoKeywords: $
 //=============================================================================//
 
-#ifndef FX_SPARKS_H
-#define FX_SPARKS_H
 #include "particles_simple.h"
 #include "particlemgr.h"
 #include "c_pixel_visibility.h"
@@ -150,8 +148,8 @@ public:
 	virtual void RenderParticles( CParticleRenderIterator *pIterator );
 protected:
 
-	bool WasTestedInView( unsigned char viewMask ) const;
-	bool IsVisibleInView( unsigned char viewMask ) const;
+	bool WasTestedInView( unsigned char viewMask );
+	bool IsVisibleInView( unsigned char viewMask );
 	void SetTestedInView( unsigned char viewMask, bool bTested );
 	void SetVisibleInView( unsigned char viewMask, bool bVisible );
 	unsigned char CurrentViewMask() const;
@@ -168,4 +166,3 @@ private:
 };
 
 #include "tier0/memdbgoff.h"
-#endif // FX_SPARKS_H

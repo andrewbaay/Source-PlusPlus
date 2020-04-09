@@ -29,7 +29,6 @@
 
 #ifndef nullptr
 	#define nullptr		( 0 )
-	#define definedNullptr
 #endif
 #ifndef INT32_MAX
 #define INT32_MAX    (0x7FFFFFFF)
@@ -540,9 +539,11 @@ class IVideoServices : public IAppSystem
 			
 };
 
-#ifdef definedNullptr
-#undef definedNullptr
-#undef nullptr
-#endif
+
+
+
+
+
+
 
 #endif // IVIDEOSERVICES_H

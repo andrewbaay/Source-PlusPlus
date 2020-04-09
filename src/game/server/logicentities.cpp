@@ -1330,8 +1330,6 @@ private:
 	COutputFloat m_OnGetValue;	// Used for polling the counter value.
 	COutputEvent m_OnHitMin;
 	COutputEvent m_OnHitMax;
-	COutputEvent m_OnChangedFromMin;
-	COutputEvent m_OnChangedFromMax;
 
 	DECLARE_DATADESC();
 };
@@ -1367,9 +1365,6 @@ BEGIN_DATADESC( CMathCounter )
 	DEFINE_OUTPUT(m_OutValue, "OutValue"),
 	DEFINE_OUTPUT(m_OnHitMin, "OnHitMin"),
 	DEFINE_OUTPUT(m_OnHitMax, "OnHitMax"),
-	DEFINE_OUTPUT(m_OnChangedFromMin, "OnChangedFromMin"),
-	DEFINE_OUTPUT(m_OnChangedFromMax, "OnChangedFromMax"),
-
 	DEFINE_OUTPUT(m_OnGetValue, "OnGetValue"),
 
 END_DATADESC()
@@ -1641,12 +1636,6 @@ void CMathCounter::UpdateOutValue(CBaseEntity *pActivator, float fNewValue)
 		}
 		else
 		{
-			// Fire an output if we just changed from the maximum value
-			if ( m_OutValue.Get() == m_flMax )
-			{
-				m_OnChangedFromMax.FireOutput( pActivator, this );
-			}
-			
 			m_bHitMax = false;
 		}
 
@@ -1663,11 +1652,6 @@ void CMathCounter::UpdateOutValue(CBaseEntity *pActivator, float fNewValue)
 		}
 		else
 		{
-			// Fire an output if we just changed from the minimum value
-			if ( m_OutValue.Get() == m_flMin )
-			{
-				m_OnChangedFromMin.FireOutput( pActivator, this );
-			}
 			m_bHitMin = false;
 		}
 
@@ -1716,7 +1700,8 @@ private:
 
 LINK_ENTITY_TO_CLASS(logic_case, CLogicCase);
 
-
+#pragma warning( push )
+#pragma warning( disable : 4838 )
 BEGIN_DATADESC( CLogicCase )
 
 // Silence, Classcheck!
@@ -1770,8 +1755,7 @@ BEGIN_DATADESC( CLogicCase )
 	DEFINE_OUTPUT(m_OnDefault, "OnDefault"),
 
 END_DATADESC()
-
-
+#pragma warning( pop )
 
 //-----------------------------------------------------------------------------
 // Purpose: Called before spawning, after key values have been set.
@@ -2574,7 +2558,8 @@ private:
 
 LINK_ENTITY_TO_CLASS(logic_branch_listener, CLogicBranchList);
 
-
+#pragma warning( push )
+#pragma warning( disable : 4838 )
 BEGIN_DATADESC( CLogicBranchList )
 
 	// Silence, classcheck!
@@ -2613,7 +2598,7 @@ BEGIN_DATADESC( CLogicBranchList )
 	DEFINE_OUTPUT( m_OnMixed, "OnMixed" ),
 
 END_DATADESC()
-
+#pragma warning( pop )
 
 //-----------------------------------------------------------------------------
 // Purpose: Called before spawning, after key values have been set.

@@ -53,7 +53,7 @@ CPDumpPanel::~CPDumpPanel()
 
 void CPDumpPanel::ApplySettings( KeyValues *inResourceData )
 {
-	SetProportional( true );
+	SetProportional( false );
 
 	BaseClass::ApplySettings( inResourceData );
 }
@@ -62,7 +62,7 @@ void CPDumpPanel::ApplySchemeSettings( vgui::IScheme *pScheme )
 {
 	BaseClass::ApplySchemeSettings( pScheme );
 
-	SetProportional( true );
+	SetProportional( false );
 	SetPaintBackgroundEnabled( false );
 }
 
@@ -343,7 +343,7 @@ void CPDumpPanel::Paint()
 		surface()->DrawSetTextFont( m_FontSmall );
 		surface()->DrawSetTextColor( Color( r, g, b, a ) );
 		surface()->DrawSetTextPos( x[ col ], y );
-		Q_snprintf( sz, sizeof( sz ), "%s", slot->fieldstring + 2 ); // skip m_
+		Q_snprintf( sz, sizeof( sz ), "%s", slot->fieldstring );
 		g_pVGuiLocalize->ConvertANSIToUnicode( sz, szconverted, sizeof(szconverted)  );
 		surface()->DrawPrintText( szconverted, wcslen( szconverted ) );
 

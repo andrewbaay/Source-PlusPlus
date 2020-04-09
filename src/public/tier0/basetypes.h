@@ -62,7 +62,7 @@
 
 
 template <typename T>
-constexpr T AlignValue( T val, uintptr_t alignment )
+inline T AlignValue( T val, uintptr_t alignment )
 {
 	return (T)( ( (uintptr_t)val + alignment - 1 ) & ~( alignment - 1 ) );
 }
@@ -84,11 +84,11 @@ constexpr T AlignValue( T val, uintptr_t alignment )
 #define COMPILETIME_MIN( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
 #define COMPILETIME_MAX( a, b ) ( ( ( a ) > ( b ) ) ? ( a ) : ( b ) )
 #ifndef MIN
-#define MIN( a, b ) Min( ( a ), ( b ) )
+#define MIN( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
 #endif
 
 #ifndef MAX
-#define MAX( a, b ) Max( ( a ), ( b ) )
+#define MAX( a, b ) ( ( ( a ) > ( b ) ) ? ( a ) : ( b ) )
 #endif
 
 #ifdef __cplusplus
@@ -98,7 +98,7 @@ constexpr T AlignValue( T val, uintptr_t alignment )
 // lower-case) function can generate more expensive code because of the
 // mixed types involved.
 template< class T >
-constexpr T Clamp( T const &val, T const &minVal, T const &maxVal )
+T Clamp( T const &val, T const &minVal, T const &maxVal )
 {
 	if( val < minVal )
 		return minVal;
@@ -111,7 +111,7 @@ constexpr T Clamp( T const &val, T const &minVal, T const &maxVal )
 // This is the preferred Min operator. Using the MIN macro can lead to unexpected
 // side-effects or more expensive code.
 template< class T >
-constexpr T Min( T const &val1, T const &val2 )
+T Min( T const &val1, T const &val2 )
 {
 	return val1 < val2 ? val1 : val2;
 }
@@ -119,7 +119,7 @@ constexpr T Min( T const &val1, T const &val2 )
 // This is the preferred Max operator. Using the MAX macro can lead to unexpected
 // side-effects or more expensive code.
 template< class T >
-constexpr T Max( T const &val1, T const &val2 )
+T Max( T const &val1, T const &val2 )
 {
 	return val1 > val2 ? val1 : val2;
 }
@@ -182,13 +182,7 @@ inline unsigned long const& FloatBits( vec_t const& f )
 
 inline vec_t BitsToFloat( unsigned long i )
 {
-	union
-	{
-		unsigned long i;
-		vec_t v;
-	} u;
-	u.i = i;
-	return u.v;
+	return *reinterpret_cast<vec_t*>(&i);
 }
 
 inline bool IsFinite( vec_t f )
@@ -243,13 +237,15 @@ struct color24
 
 typedef struct color32_s
 {
-	constexpr bool operator!=( const struct color32_s &other ) const
-	{
-		return r != other.r || g != other.g || b != other.b || a != other.a;
-	}
+	bool operator!=( const struct color32_s &other ) const;
 
 	byte r, g, b, a;
 } color32;
+
+inline bool color32::operator!=( const color32 &other ) const
+{
+	return r != other.r || g != other.g || b != other.b || a != other.a;
+}
 
 struct colorVec
 {
@@ -378,24 +374,24 @@ protected:
 
 // this allows enumerations to be used as flags, and still remain type-safe!
 #define DEFINE_ENUM_BITWISE_OPERATORS( Type ) \
-	constexpr Type  operator|  ( Type  a, Type b ) { return Type( int( a ) | int( b ) ); } \
-	constexpr Type  operator&  ( Type  a, Type b ) { return Type( int( a ) & int( b ) ); } \
-	constexpr Type  operator^  ( Type  a, Type b ) { return Type( int( a ) ^ int( b ) ); } \
-	constexpr Type  operator<< ( Type  a, int  b ) { return Type( int( a ) << b ); } \
-	constexpr Type  operator>> ( Type  a, int  b ) { return Type( int( a ) >> b ); } \
-	constexpr Type &operator|= ( Type &a, Type b ) { return a = a |  b; } \
-	constexpr Type &operator&= ( Type &a, Type b ) { return a = a &  b; } \
-	constexpr Type &operator^= ( Type &a, Type b ) { return a = a ^  b; } \
-	constexpr Type &operator<<=( Type &a, int  b ) { return a = a << b; } \
-	constexpr Type &operator>>=( Type &a, int  b ) { return a = a >> b; } \
-	constexpr Type  operator~( Type a ) { return Type( ~int( a ) ); }
+	inline Type  operator|  ( Type  a, Type b ) { return Type( int( a ) | int( b ) ); } \
+	inline Type  operator&  ( Type  a, Type b ) { return Type( int( a ) & int( b ) ); } \
+	inline Type  operator^  ( Type  a, Type b ) { return Type( int( a ) ^ int( b ) ); } \
+	inline Type  operator<< ( Type  a, int  b ) { return Type( int( a ) << b ); } \
+	inline Type  operator>> ( Type  a, int  b ) { return Type( int( a ) >> b ); } \
+	inline Type &operator|= ( Type &a, Type b ) { return a = a |  b; } \
+	inline Type &operator&= ( Type &a, Type b ) { return a = a &  b; } \
+	inline Type &operator^= ( Type &a, Type b ) { return a = a ^  b; } \
+	inline Type &operator<<=( Type &a, int  b ) { return a = a << b; } \
+	inline Type &operator>>=( Type &a, int  b ) { return a = a >> b; } \
+	inline Type  operator~( Type a ) { return Type( ~int( a ) ); }
 
 // defines increment/decrement operators for enums for easy iteration
 #define DEFINE_ENUM_INCREMENT_OPERATORS( Type ) \
-	constexpr Type &operator++( Type &a      ) { return a = Type( int( a ) + 1 ); } \
-	constexpr Type &operator--( Type &a      ) { return a = Type( int( a ) - 1 ); } \
-	constexpr Type  operator++( Type &a, int ) { Type t = a; ++a; return t; } \
-	constexpr Type  operator--( Type &a, int ) { Type t = a; --a; return t; }
+	inline Type &operator++( Type &a      ) { return a = Type( int( a ) + 1 ); } \
+	inline Type &operator--( Type &a      ) { return a = Type( int( a ) - 1 ); } \
+	inline Type  operator++( Type &a, int ) { Type t = a; ++a; return t; } \
+	inline Type  operator--( Type &a, int ) { Type t = a; --a; return t; }
 
 #include "tier0/valve_on.h"
 

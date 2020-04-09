@@ -1633,12 +1633,11 @@ CON_COMMAND( physics_budget, "Times the cost of each active object" )
 			lastTime = elapsed;
  		}
 
-		totalTime = MAX( totalTime, 0.001f );
+		totalTime = MAX( totalTime, 0.001 );
 		for ( i = 0; i < ents.Count(); i++ )
 		{
 			float fraction = times[i] / totalTime;
-			const Vector& origin = ents[i]->GetAbsOrigin();
-			Msg( "%s (%s): %.3fms (%.3f%%) @ %s\n", ents[i]->GetClassname(), ents[i]->GetDebugName(), fraction * totalTime * 1000.0f, fraction * 100.0f, VecToString( origin ) );
+			Msg( "%s (%s): %.3fms (%.3f%%) @ %s\n", ents[i]->GetClassname(), ents[i]->GetDebugName(), fraction * totalTime * 1000.0f, fraction * 100.0f, VecToString(ents[i]->GetAbsOrigin()) );
 		}
 		g_Collisions.BufferTouchEvents( false );
 	}
@@ -1844,10 +1843,10 @@ void CCollisionEvent::PreCollision( vcollisionevent_t *pEvent )
 					// so make it fairly small and have a tiny collision instead.
 					pObject->GetVelocity( &velocity, &angVel );
 					float len = VectorNormalize(velocity);
-					len = MAX( len, 10.f );
+					len = MAX( len, 10 );
 					velocity *= len;
 					len = VectorNormalize(angVel);
-					len = MAX( len, 1.f );
+					len = MAX( len, 1 );
 					angVel *= len;
 					pObject->SetVelocity( &velocity, &angVel );
 				}

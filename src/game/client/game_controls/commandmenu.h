@@ -16,14 +16,16 @@
 #include "utlvector.h"
 #include <KeyValues.h>
 
-class CommandMenu : public vgui::Menu
+using namespace vgui;
+
+class CommandMenu : public Menu
 {
 private:
-	DECLARE_CLASS_SIMPLE( CommandMenu, vgui::Menu );
+	DECLARE_CLASS_SIMPLE( CommandMenu, Menu );
 	
 		typedef struct
 		{
-			vgui::Menu* menu;
+			Menu *	menu;
 			int		itemnr;
 		} CommandMenuItem;
 
@@ -39,8 +41,8 @@ private:
 	public:
 		// overwrite these in your derived class
 		// virtual CommandMenu * CommandMenu::Factory(Panel *parent, const char *panelName, IViewPort * viewport = NULL, IFileSystem * pFileSytem = NULL); // overwrite
-		virtual int  AddCustomItem(KeyValues * params, vgui::Menu * menu) {return 0;} // return MenuItem nr
-		virtual void UpdateCustomItem(KeyValues * params, vgui::MenuItem * item ) {}; // maybe change your item
+		virtual int  AddCustomItem(KeyValues * params, Menu * menu) {return 0;} // return MenuItem nr
+		virtual void UpdateCustomItem(KeyValues * params, MenuItem * item ) {}; // maybe change your item
 		virtual void OnCustomItem(KeyValues * params) {}; // a custom item was pressed
 		virtual bool CheckRules(const char *rule, const char *ruledata); // check a menu item rule
 		virtual void SetVisible(bool state);
@@ -49,7 +51,7 @@ private:
 
 	protected:
 				
-		void	OnMessage(const KeyValues *params, vgui::VPANEL fromPanel);
+		void	OnMessage(const KeyValues *params, VPANEL fromPanel);
 		void	StartNewSubMenu(KeyValues * params);
 		void	FinishSubMenu();
 		void	AddMenuCommandItem(KeyValues * params);
@@ -62,7 +64,7 @@ private:
 
 	
 		IViewPort * m_ViewPort;		// viewport interface
-		vgui::Menu*	m_CurrentMenu;	// Current menu while building CommandComoboBox
+		Menu *		m_CurrentMenu;	// Current menu while building CommandComoboBox
 		char		m_CurrentTeam[4];
 		char		m_CurrentMap[256];
 		

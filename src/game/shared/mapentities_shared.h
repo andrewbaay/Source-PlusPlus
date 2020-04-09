@@ -21,12 +21,12 @@
 class CEntityMapData
 {
 private:
-	const char	*m_pEntData;
+	char	*m_pEntData;
 	int		m_nEntDataSize;
-	const char	*m_pCurrentKey;
+	char	*m_pCurrentKey;
 
 public:
-	explicit CEntityMapData( const char *entBlock, int nEntBlockSize = -1 ) : 
+	explicit CEntityMapData( char *entBlock, int nEntBlockSize = -1 ) : 
 		m_pEntData(entBlock), m_nEntDataSize(nEntBlockSize), m_pCurrentKey(entBlock) {}
 
 	// find the keyName in the entdata and puts it's value into Value.  returns false if key is not found

@@ -599,7 +599,7 @@ public:
 
 		case TE_SMOKE:
 			{
-				Vector vecOrigin;
+				Vector vecOrigin, vecDirection;
 				vecOrigin.x = pKeyValues->GetFloat( "originx" );
 				vecOrigin.y = pKeyValues->GetFloat( "originy" );
 				vecOrigin.z = pKeyValues->GetFloat( "originz" );

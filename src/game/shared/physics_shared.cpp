@@ -827,6 +827,7 @@ void PhysComputeSlideDirection( IPhysicsObject *pPhysics, const Vector &inputVel
 {
 	Vector velocity = inputVelocity;
 	AngularImpulse angVel = inputAngularVelocity;
+	Vector pos;
 
 	IPhysicsFrictionSnapshot *pSnapshot = pPhysics->CreateFrictionSnapshot();
 	while ( pSnapshot->IsValid() )
@@ -1002,7 +1003,7 @@ void PhysFrictionSound( CBaseEntity *pEntity, IPhysicsObject *pObject, float ene
 	if ( psurf->sounds.scrapeSmooth && phit->audio.roughnessFactor < psurf->audio.roughThreshold )
 	{
 		soundName = psurf->sounds.scrapeSmooth;
-		soundHandle = &psurf->soundhandles.scrapeSmooth;
+		soundHandle = &psurf->soundhandles.scrapeRough;
 	}
 
 	const char *pSoundName = physprops->GetString( soundName );

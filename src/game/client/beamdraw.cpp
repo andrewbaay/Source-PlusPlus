@@ -801,7 +801,7 @@ void DrawSplineSegs( int noise_divisions, float *prgNoise,
 		seg.m_flAlpha = 1;
 
 		VectorScale( color, brightness, scaledColor );
-		//seg.m_vColor.Init( scaledColor[0], scaledColor[1], scaledColor[2] );
+		seg.m_vColor.Init( scaledColor[0], scaledColor[1], scaledColor[2] );
 		
 
 		// -------------------------------------------------
@@ -839,9 +839,6 @@ void DrawSplineSegs( int noise_divisions, float *prgNoise,
 				}
 			}
 
-			VectorScale( color, brightness, scaledColor );
-			seg.m_vColor.Init( scaledColor[0], scaledColor[1], scaledColor[2] );
-
 			// -----------------------------------------------------------
 			//  Calculate spline position
 			// -----------------------------------------------------------
@@ -866,7 +863,7 @@ void DrawSplineSegs( int noise_divisions, float *prgNoise,
 				VectorSubtract(CurrentViewOrigin(),seg.m_vPos,vLookDir);
 				VectorNormalize(vLookDir);
 
-				float	dotpr		= fabsf(DotProduct(vBeamDir1,vLookDir));
+				float	dotpr		= fabs(DotProduct(vBeamDir1,vLookDir));
 				static float thresh = 0.85;
 				if (dotpr > thresh && dotpr > bestDot)
 				{
@@ -918,7 +915,7 @@ void DrawSplineSegs( int noise_divisions, float *prgNoise,
 		// --------------------------------------------------------------
 		//  Draw halo on segment most facing the player 
 		// --------------------------------------------------------------
-		if (/*false&&*/pHaloMaterial)
+		if (false&&pHaloMaterial)
 		{
 			Vector vHaloPos(0,0,0);
 			if (bestDot != 0)
@@ -935,7 +932,7 @@ void DrawSplineSegs( int noise_divisions, float *prgNoise,
 				VectorSubtract(CurrentViewOrigin(),pStart,vLookDir);
 				VectorNormalize(vLookDir);
 
-				bestDot		= fabsf(DotProduct(vBeamDir1,vLookDir));
+				bestDot		= fabs(DotProduct(vBeamDir1,vLookDir));
 				static float thresh = 0.85;
 				if (bestDot > thresh)
 				{

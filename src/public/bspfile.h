@@ -794,10 +794,7 @@ struct dfaceid_t
 #if defined( _X360 )
 #pragma bitfield_order( push, lsb_to_msb )
 #endif
-#if defined( _MSC_VER )
-#pragma warning( push )
 #pragma warning( disable:4201 )	// C4201: nonstandard extension used: nameless struct/union
-#endif
 struct dleaf_version_0_t
 {
 	DECLARE_BYTESWAP_DATADESC();
@@ -851,9 +848,7 @@ struct dleaf_t
 	// Precaculated light info for entities.
 //	CompressedLightCube m_AmbientLighting;
 };
-#if defined( _MSC_VER )
-#pragma warning( pop )
-#endif
+#pragma warning( default:4201 )	// C4201: nonstandard extension used: nameless struct/union
 #if defined( _X360 )
 #pragma bitfield_order( pop )
 #endif

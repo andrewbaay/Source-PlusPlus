@@ -405,8 +405,8 @@ void CC_CreateFlashlight( const CCommand &args )
 	if ( !pPlayer )
 		return;
 
-	const QAngle& angles = pPlayer->EyeAngles();
-	const Vector& origin = pPlayer->EyePosition();
+	QAngle angles = pPlayer->EyeAngles();
+	Vector origin = pPlayer->EyePosition();
 
 	CEnvProjectedTexture *pFlashlight = dynamic_cast< CEnvProjectedTexture * >( CreateEntityByName( "env_projectedtexture" ) );
 	if ( args.ArgC() > 1 )

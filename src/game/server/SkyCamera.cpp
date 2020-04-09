@@ -16,20 +16,12 @@
 CEntityClassList<CSkyCamera> g_SkyList;
 template <> CSkyCamera *CEntityClassList<CSkyCamera>::m_pClassList = NULL;
 
-CHandle<CSkyCamera> g_hActiveSkybox = NULL;
-
-
-
 //-----------------------------------------------------------------------------
 // Retrives the current skycamera
 //-----------------------------------------------------------------------------
 CSkyCamera*	GetCurrentSkyCamera()
 {
-	if (g_hActiveSkybox.Get() == NULL)
-	{
-		g_hActiveSkybox = GetSkyCameraList();
-	}
-	return g_hActiveSkybox.Get();
+	return g_SkyList.m_pClassList;
 }
 
 CSkyCamera*	GetSkyCameraList()
@@ -63,8 +55,6 @@ BEGIN_DATADESC( CSkyCamera )
 	DEFINE_KEYFIELD( m_skyboxData.fog.start,			FIELD_FLOAT, "fogstart" ),
 	DEFINE_KEYFIELD( m_skyboxData.fog.end,				FIELD_FLOAT, "fogend" ),
 	DEFINE_KEYFIELD( m_skyboxData.fog.maxdensity,		FIELD_FLOAT, "fogmaxdensity" ),
-
-	DEFINE_INPUTFUNC( FIELD_VOID,	"ActivateSkybox",	InputActivateSkybox ),
 
 END_DATADESC()
 
@@ -154,12 +144,4 @@ void CSkyCamera::Activate( )
 		}
 	}
 #endif
-}
-
-//-----------------------------------------------------------------------------
-// Activate!
-//-----------------------------------------------------------------------------
-void CSkyCamera::InputActivateSkybox( inputdata_t &inputdata )
-{
-	g_hActiveSkybox = this;
 }

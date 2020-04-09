@@ -2657,6 +2657,11 @@ void CProtoSniper::InputDisableSniper( inputdata_t &inputdata )
 //---------------------------------------------------------
 bool CProtoSniper::FindFrustratedShot( float flNoise )
 {
+	Vector vecForward;
+	Vector vecStart;
+	Vector vecAimAt;
+	Vector vecAim;
+
 	if( !GetEnemy() )
 	{
 		return false;
@@ -2753,7 +2758,7 @@ bool CProtoSniper::FVisible( CBaseEntity *pEntity, int traceMask, CBaseEntity **
 	Vector	vecEye;
 	trace_t	tr;
 
-	if( fabsf( GetAbsOrigin().z - pEntity->WorldSpaceCenter().z ) <= 120.f )
+	if( fabs( GetAbsOrigin().z - pEntity->WorldSpaceCenter().z ) <= 120.f )
 	{
 		// If the player is around the same elevation, look straight at his eyes. 
 		// At the same elevation, the vertical peeking allowance makes it too easy

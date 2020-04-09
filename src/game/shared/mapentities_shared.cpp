@@ -226,8 +226,8 @@ bool CEntityMapData::GetNextKey( char *keyName, char *value )
 	char token[MAPKEY_MAXLENGTH];
 
 	// parse key
-	const char *pPrevKey = m_pCurrentKey;
-	m_pCurrentKey = MapEntity_ParseToken( m_pCurrentKey, token );
+	char *pPrevKey = m_pCurrentKey;
+	m_pCurrentKey = (char*)MapEntity_ParseToken( m_pCurrentKey, token );
 	if ( token[0] == '}' )
 	{
 		// step back
@@ -253,7 +253,7 @@ bool CEntityMapData::GetNextKey( char *keyName, char *value )
 	}
 
 	// parse value	
-	m_pCurrentKey = MapEntity_ParseToken( m_pCurrentKey, token );
+	m_pCurrentKey = (char*)MapEntity_ParseToken( m_pCurrentKey, token );
 	if ( !m_pCurrentKey )
 	{
 		Warning( "CEntityMapData::GetNextKey: EOF without closing brace\n" );
@@ -283,17 +283,15 @@ bool CEntityMapData::SetValue( const char *keyName, char *NewValue, int nKeyInst
 		return false;
 
 	char token[MAPKEY_MAXLENGTH];
-	const char *inputData = m_pEntData;
-	const char *prevData;
+	char *inputData = m_pEntData;
+	char *prevData;
 
 	char newvaluebuf[ 1024 ];
 	int nCurrKeyInstance = 0;
 
-	const size_t pEndDataSize = V_strlen( m_pEntData );
-
 	while ( inputData )
 	{
-		inputData = MapEntity_ParseToken( inputData, token );	// get keyname
+		inputData = (char*)MapEntity_ParseToken( inputData, token );	// get keyname
 		if ( token[0] == '}' )									// end of entity?
 			break;												// must not have seen the classname
 
@@ -304,10 +302,11 @@ bool CEntityMapData::SetValue( const char *keyName, char *NewValue, int nKeyInst
 			if ( nCurrKeyInstance > nKeyInstance )
 			{
 				// Find the start & end of the token we're going to replace
-				char *postData = new char[pEndDataSize];
+				int entLen = strlen(m_pEntData);
+				char *postData = new char[entLen];
 				prevData = inputData;
-				inputData = MapEntity_ParseToken( inputData, token );	// get keyname
-				Q_strncpy( postData, inputData, pEndDataSize );
+				inputData = (char*)MapEntity_ParseToken( inputData, token );	// get keyname
+				Q_strncpy( postData, inputData, entLen );
 
 				// Insert quotes if caller didn't
 				if ( NewValue[0] != '\"' )
@@ -324,8 +323,8 @@ bool CEntityMapData::SetValue( const char *keyName, char *NewValue, int nKeyInst
 
 				// prevData has a space at the start, seperating the value from the key.
 				// Add 1 to prevData when pasting in the new Value, to account for the space.
-				Q_strncpy( const_cast<char*>(prevData+1), newvaluebuf, iNewValueLen+1 );	// +1 for the null terminator
-				Q_strcat( const_cast<char*>(prevData), postData, m_nEntDataSize - ((prevData-m_pEntData)+1) );
+				Q_strncpy( prevData+1, newvaluebuf, iNewValueLen+1 );	// +1 for the null terminator
+				Q_strcat( prevData, postData, m_nEntDataSize - ((prevData-m_pEntData)+1) );
 
 				m_pCurrentKey += iPadding;
 				delete [] postData;
@@ -333,7 +332,7 @@ bool CEntityMapData::SetValue( const char *keyName, char *NewValue, int nKeyInst
 			}
 		}
 
-		inputData = MapEntity_ParseToken( inputData, token );	// skip over value
+		inputData = (char*)MapEntity_ParseToken( inputData, token );	// skip over value
 	}
 
 	return false;

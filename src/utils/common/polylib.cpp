@@ -263,7 +263,7 @@ winding_t *BaseWindingForPlane (const Vector &normal, vec_t dist)
 	x = -1;
 	for (i=0 ; i<3; i++)
 	{
-		v = fabsf(normal[i]);
+		v = fabs(normal[i]);
 		if (v > max)
 		{
 			x = i;
