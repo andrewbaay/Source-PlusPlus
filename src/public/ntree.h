@@ -8,7 +8,6 @@
 #ifndef __TREE_H__
 #define __TREE_H__
 
-#include "dbg.h"
 #include "List.h"
 #include "ArrayStack.h"
 
@@ -176,7 +175,7 @@ int NTreeNode<T>::GetIndexRelativeToParent()
 {
 	if( !parent )
 	{
-		Assert( 0 ); // hack
+		assert( 0 ); // hack
 		return -1;
 	}
 	GListIterator<NTreeNode<T> *> iterator( parent->list );
@@ -188,7 +187,7 @@ int NTreeNode<T>::GetIndexRelativeToParent()
 			return i;
 		}
 	}
-	Assert( 0 ); // hack
+	assert( 0 ); // hack
 	return -1;
 }
 

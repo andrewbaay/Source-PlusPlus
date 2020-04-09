@@ -497,7 +497,7 @@ bool CIncremental::Finalize()
 		int w = g_pFaces[facenum].m_LightmapTextureSizeInLuxels[0]+1;
 		int h = g_pFaces[facenum].m_LightmapTextureSizeInLuxels[1]+1;
 		int nLuxels = w * h;
-		Assert( nLuxels <= sizeof(faceLight) / sizeof(faceLight[0]) );
+		assert( nLuxels <= sizeof(faceLight) / sizeof(faceLight[0]) );
 
 		// Clear the lighting for this face.
 		memset( faceLight, 0, nLuxels * sizeof(Vector) );
@@ -614,7 +614,7 @@ bool CIncremental::LoadIncrementalFile()
 
 		int nFaces;
 		FileRead( fp, nFaces );
-		Assert( nFaces < 70000 );
+		assert( nFaces < 70000 );
 
 		for( int iFace=0; iFace < nFaces; iFace++ )
 		{
@@ -743,7 +743,7 @@ CLightFace* CIncLight::FindOrCreateLightFace( int iFace, int lmSize, bool *bNew 
 
 		if( pFace->m_FaceIndex == iFace )
 		{
-			Assert( pFace->m_LightValues.Count() == lmSize );
+			assert( pFace->m_LightValues.Count() == lmSize );
 			return pFace;
 		}
 	}

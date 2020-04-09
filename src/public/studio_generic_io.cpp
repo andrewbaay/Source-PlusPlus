@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //=============================================================================//
 
+#include <assert.h>
+
 #include "studio.h"
 #include "utlrbtree.h"
 

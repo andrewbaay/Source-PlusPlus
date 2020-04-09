@@ -62,7 +62,7 @@ void CByteswap::SwapFieldToTargetEndian( void* pOutputBuffer, void *pData, typed
 		break;
 		
 	default:
-		Assert(0); 
+		assert(0); 
 	}
 }
 

@@ -5,6 +5,7 @@
 // $NoKeywords: $
 //=============================================================================//
 
+#include <assert.h>
 #include <ctype.h>
 
 #include <vgui/MouseCode.h>
@@ -764,7 +765,7 @@ void ListViewPanel::OnShiftSelect(int itemID)
 			break;
 		}
 	}
-	Assert(lowerPos <= upperPos);
+	assert(lowerPos <= upperPos);
 	if ( !input()->IsKeyDown(KEY_LCONTROL) && !input()->IsKeyDown(KEY_RCONTROL) )
 	{
 		ClearSelectedItems();		

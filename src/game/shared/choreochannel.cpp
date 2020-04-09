@@ -6,6 +6,7 @@
 //
 //=============================================================================//
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include "choreochannel.h"
@@ -63,7 +64,7 @@ CChoreoChannel&	CChoreoChannel::operator=( const CChoreoChannel& src )
 //-----------------------------------------------------------------------------
 void CChoreoChannel::SetName( const char *name )
 {
-	Assert( Q_strlen( name ) < MAX_CHANNEL_NAME );
+	assert( Q_strlen( name ) < MAX_CHANNEL_NAME );
 	Q_strncpy( m_szName, name, sizeof( m_szName ) );
 }
 

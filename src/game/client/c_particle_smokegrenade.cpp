@@ -877,7 +877,7 @@ void C_ParticleSmokeGrenade::FillVolume()
 							int testX, testY, testZ;
 							int index = GetSmokeParticleIndex(x,y,z);
 							GetParticleInfoXYZ(index, testX, testY, testZ);
-							Assert(testX == x && testY == y && testZ == z);
+							assert(testX == x && testY == y && testZ == z);
 						#endif
 
 						Vector vColor = EngineGetLightForPoint(vPos);

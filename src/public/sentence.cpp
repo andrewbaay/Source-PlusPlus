@@ -8,6 +8,7 @@
 
 #if !defined(_STATIC_LINKED) || defined(_SHARED_LIB)
 
+#include <assert.h>
 #include "commonmacros.h"
 #include "basetypes.h"
 #include "sentence.h"
@@ -488,7 +489,7 @@ void CSentence::ParseWords( CUtlBuffer& buf )
 		end = atof( token );
 
 		CWordTag *wt = new CWordTag( word );
-		Assert( wt );
+		assert( wt );
 		wt->m_flStartTime = start;
 		wt->m_flEndTime = end;
 
@@ -522,7 +523,7 @@ void CSentence::ParseWords( CUtlBuffer& buf )
 			volume = atof( token );
 
 			CPhonemeTag *pt = new CPhonemeTag();
-			Assert( pt );
+			assert( pt );
 			pt->SetPhonemeCode( code );
 			pt->SetTag( phonemename );
 			pt->SetStartTime( start );
@@ -935,7 +936,7 @@ void CSentence::MakeRuntimeOnly()
 		for ( int j = 0; j < pcount; ++j )
 		{
 			CPhonemeTag *phoneme = word->m_Phonemes[ j ];
-			Assert( phoneme );
+			assert( phoneme );
 
 			AddRuntimePhoneme( phoneme );
 		}
@@ -1058,7 +1059,7 @@ void CSentence::InitFromBuffer( CUtlBuffer& buf )
 	}
 	else
 	{
-		Assert( 0 );
+		assert( 0 );
 		return;
 	}
 }

@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //=============================================================================//
 
+#include <assert.h>
+
 #define PROTECTED_THINGS_DISABLE
 
 #include <vgui/Cursor.h>

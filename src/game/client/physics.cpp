@@ -163,7 +163,7 @@ bool PhysicsDLLInit( CreateInterfaceFn physicsFactory )
 void PhysicsLevelInit( void )
 {
 	physenv = physics->CreateEnvironment();
-	Assert( physenv );
+	assert( physenv );
 #ifdef PORTAL
 	physenv_main = physenv;
 #endif

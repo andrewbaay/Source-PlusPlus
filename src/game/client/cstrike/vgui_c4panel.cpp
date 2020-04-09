@@ -66,7 +66,7 @@ CC4Panel::~CC4Panel()
 
 void CC4Panel::ApplySchemeSettings( IScheme *pScheme )
 {
-	Assert( pScheme );
+	assert( pScheme );
 
 	m_cArmed = pScheme->GetColor( "C4Panel_Armed", GetFgColor() );
 	m_cDefused = pScheme->GetColor( "C4Panel_Defused", GetFgColor() );
@@ -170,7 +170,7 @@ void CC4Panel::OnTick()
 			flTimeInThisChar = flTransitionTimes[iDigitPos-1] - flTransitionTimes[iDigitPos];
 
 
-		Assert( flTimeInThisChar > 0.0 );
+		assert( flTimeInThisChar > 0.0 );
 
 
 		float flPercentDecoding = ( flProgress - flTransitionTimes[iDigitPos] ) / flTimeInThisChar;

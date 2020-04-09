@@ -7,6 +7,7 @@
 
 
 #include <stdio.h>
+#include <assert.h>
 #include <utlvector.h>
 #include <vstdlib/IKeyValuesSystem.h>
 #include <ctype.h>	// isdigit()

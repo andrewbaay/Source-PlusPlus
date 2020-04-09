@@ -421,9 +421,9 @@ void CCamoMaterialProxy::GenerateCamoTexture( ITexture* pTexture, IVTFTexture *p
 		for( x = 0; x < width; x++ )
 		{
 			int offset = 3 * ( x + y * width );
-			Assert( offset < width * height * 3 );
+			assert( offset < width * height * 3 );
 			int paletteID = m_pCamoPatternImage[x + y * width];
-			Assert( paletteID < 256 );
+			assert( paletteID < 256 );
 #if 1
 			imageData[offset + 0] = camoPalette[paletteID][0];
 			imageData[offset + 1] = camoPalette[paletteID][1];

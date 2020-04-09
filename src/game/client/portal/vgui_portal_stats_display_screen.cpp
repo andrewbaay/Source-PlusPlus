@@ -85,7 +85,7 @@ CPortalStatsDisplayScreen::~CPortalStatsDisplayScreen()
 
 void CPortalStatsDisplayScreen::ApplySchemeSettings( IScheme *pScheme )
 {
-	Assert( pScheme );
+	assert( pScheme );
 
 	m_cPass = pScheme->GetColor( "CPortalStatsDisplayScreen_Pass", GetFgColor() );
 	m_cFail = pScheme->GetColor( "CPortalStatsDisplayScreen_Fail", GetFgColor() );

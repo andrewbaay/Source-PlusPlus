@@ -1816,7 +1816,7 @@ void BuildFacesVisibleToLights( bool bAllVisible )
 						int index = dleafs[iLeaf].firstleafface + iFace;
 						index = dleaffaces[index];
 						
-						Assert( index < numfaces );
+						assert( index < numfaces );
 						g_FacesVisibleToLights[index >> 3] |= (1 << (index & 7));
 					}
 

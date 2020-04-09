@@ -77,7 +77,7 @@ void CDebugOverlay::ApplySchemeSettings(vgui::IScheme *pScheme)
 	// Use a large font
 //	m_hFont = pScheme->GetFont( "Default" );
 	m_hFont = pScheme->GetFont( "DebugOverlay" );
-	Assert( m_hFont );
+	assert( m_hFont );
 
 	int w, h;
 	vgui::surface()->GetScreenSize( w, h );

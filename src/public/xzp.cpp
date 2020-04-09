@@ -200,7 +200,7 @@ bool CXZip::Load( FILE* handle, int nOffset, int nSize, bool bPreload )	// Load 
 			break;
 
 		default: 
-			Assert( 0 );
+			assert( 0 );
 			// Fail gently in release:
 		
 		// The magic doesn't match in any respect:

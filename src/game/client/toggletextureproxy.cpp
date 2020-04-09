@@ -79,7 +79,7 @@ void CBaseToggleTextureProxy::Cleanup()
 //-----------------------------------------------------------------------------
 void CBaseToggleTextureProxy::OnBind( void *pC_BaseEntity )
 {
-	Assert ( m_TextureVar );
+	assert ( m_TextureVar );
 
 	if (!pC_BaseEntity)
 		return;

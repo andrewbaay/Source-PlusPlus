@@ -1509,7 +1509,7 @@ void C_Portal_Player::CalcPortalView( Vector &eyeOrigin, QAngle &eyeAngles )
 	vieweffects->ApplyShake( eyeOrigin, eyeAngles, 1.0 );
 
 	C_Prop_Portal *pPortal = m_hPortalEnvironment.Get();
-	Assert( pPortal );
+	assert( pPortal );
 
 	C_Prop_Portal *pRemotePortal = pPortal->m_hLinkedPortal;
 	if( !pRemotePortal )

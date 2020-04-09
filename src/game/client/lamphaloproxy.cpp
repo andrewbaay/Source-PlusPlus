@@ -52,7 +52,7 @@ CLampHaloProxy::~CLampHaloProxy( void )
 //-----------------------------------------------------------------------------
 bool CLampHaloProxy::Init( IMaterial *pMaterial, KeyValues *pKeyValues )
 {
-	Assert( pMaterial );
+	assert( pMaterial );
 
 	// Get pointers to material vars.
 

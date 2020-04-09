@@ -19,7 +19,7 @@ using namespace vgui;
 #define AssertCheck(expr, msg) \
 	if(!(expr))\
 	{\
-		Assert(!msg);\
+		assert(!msg);\
 		return 0;\
 	}
 

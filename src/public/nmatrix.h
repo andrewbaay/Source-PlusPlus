@@ -12,7 +12,7 @@
 #endif
 
 
-#include "dbg.h"
+#include <assert.h>
 #include "nvector.h"
 
 
@@ -86,7 +86,7 @@ inline NMatrixMN NMatrixMN::SetupNMatrixNull()
 template<int M, int N>
 inline NMatrixMN NMatrixMN::SetupNMatrixIdentity()
 {
-	Assert( M == N );	// Identity matrices must be square.
+	assert( M == N );	// Identity matrices must be square.
 
 	NMatrix ret;
 	memset( ret.m, 0, sizeof(float)*M*N );
@@ -211,7 +211,7 @@ bool NMatrixMN::InverseGeneral( NMatrixMN &mInverse ) const
 	// Can only invert square matrices.
 	if( M != N )
 	{
-		Assert( !"Tried to invert a non-square matrix" );
+		assert( !"Tried to invert a non-square matrix" );
 		return false;
 	}
 

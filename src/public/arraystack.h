@@ -15,7 +15,7 @@
 #define ARRAYSTACK_H
 #pragma once
 
-#include "dbg.h"
+#include <assert.h>
 #include "List.h"
 
 template <class T> class ArrayStack
@@ -31,7 +31,7 @@ public:
 		data = new T[maxNumElements];
 		m_maxNumElements = maxNumElements;
 		m_stackDepth = 0;
-		Assert( data );
+		assert( data );
 	}
 	
 	void Push( T elem )
@@ -40,7 +40,7 @@ public:
 		if( m_stackDepth > m_maxNumElements )
 		{
 			printf( "ArrayStack overflow\n" );
-			Assert( 0 );
+			assert( 0 );
 		}
 	}
 	
@@ -49,7 +49,7 @@ public:
 		if( m_stackDepth == 0 )
 		{
 			printf( "ArrayStack underflow\n" );
-			Assert( 0 );
+			assert( 0 );
 		}
 		return data[--m_stackDepth];
 	}

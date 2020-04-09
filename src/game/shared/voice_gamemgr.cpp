@@ -9,6 +9,7 @@
 #include "voice_gamemgr.h"
 #include <string.h>
 #include <stdarg.h>
+#include <assert.h>
 #include "player.h"
 #include "ivoiceserver.h"
 #include "usermessages.h"

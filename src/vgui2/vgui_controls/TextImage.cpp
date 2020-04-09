@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <assert.h>
 #include <malloc.h>
 
 #include <vgui/IPanel.h>
