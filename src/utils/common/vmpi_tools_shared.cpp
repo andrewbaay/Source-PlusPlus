@@ -1,14 +1,11 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
-// Purpose:
+// Purpose: 
 //
 //=============================================================================//
 
 #include <windows.h>
-#pragma warning(push)
-#pragma warning(disable:4091)
 #include <dbghelp.h>
-#pragma warning(pop)
 #include "vmpi.h"
 #include "cmdlib.h"
 #include "vmpi_tools_shared.h"
@@ -47,7 +44,7 @@ bool SharedDispatch( MessageBuffer *pBuf, int iSource, int iPacketID )
 			pInPos += strlen( pInPos ) + 1;
 
 			Q_strncpy( qdir, pInPos, sizeof( qdir ) );
-
+			
 			g_bReceivedDirectoryInfo = true;
 		}
 		return true;
@@ -169,7 +166,7 @@ void SendDBInfo( const CDBInfo *pInfo, unsigned long jobPrimaryID )
 	char cPacketInfo[2] = { VMPI_SHARED_PACKET_ID, VMPI_SUBPACKETID_DBINFO };
 	const void *pChunks[] = { cPacketInfo, pInfo, &jobPrimaryID };
 	int chunkLengths[] = { 2, sizeof( CDBInfo ), sizeof( jobPrimaryID ) };
-
+	
 	VMPI_SendChunks( pChunks, chunkLengths, ARRAYSIZE( pChunks ), VMPI_PERSISTENT );
 }
 
@@ -240,9 +237,9 @@ void VMPI_HandleCrash( const char *pMessage, void *pvExceptionInfo, bool bAssert
 		// Send a message to the master.
 		char crashMsg[4] = { VMPI_SHARED_PACKET_ID, VMPI_SUBPACKETID_CRASH, 't', ':' };
 
-		VMPI_Send2Chunks(
-			crashMsg,
-			sizeof( crashMsg ),
+		VMPI_Send2Chunks( 
+			crashMsg, 
+			sizeof( crashMsg ), 
 			pMessage,
 			strlen( pMessage ) + 1,
 			VMPI_MASTER_ID );
@@ -335,7 +332,7 @@ void VMPI_ExceptionFilter( unsigned long uCode, void *pvExceptionInfo )
 		sprintf( chUnknownBuffer, "Error code 0x%08X", uCode );
 		pchReason = chUnknownBuffer;
 	}
-
+	
 	VMPI_HandleCrash( pchReason, pvExceptionInfo, true );
 
 	TerminateProcess( GetCurrentProcess(), 1 );
@@ -352,7 +349,7 @@ void HandleMPIDisconnect( int procID, const char *pReason )
 	g_bSuppressPrintfOutput = ( Q_stristr( pReason, "invalid packet size" ) == 0 );
 
 		Warning( "\n\n--- WARNING: lost connection to '%s' (%s).\n", VMPI_GetMachineName( procID ), pReason );
-
+		
 		if ( g_bMPIMaster )
 		{
 			Warning( "%d workers remain.\n\n", nLiveWorkers );
@@ -370,7 +367,7 @@ void HandleMPIDisconnect( int procID, const char *pReason )
 			VMPI_HandleAutoRestart();
 			Error( "Worker quitting." );
 		}
-
+	
 	g_bSuppressPrintfOutput = bOldSuppress;
 }
 

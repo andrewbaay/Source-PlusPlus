@@ -1,15 +1,12 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
-// Purpose:
+// Purpose: 
 //
 // $NoKeywords: $
 //=============================================================================//
 
-#include <Windows.h>
-#pragma warning(push)
-#pragma warning(disable:4091)
+#include <windows.h>
 #include <dbghelp.h>
-#pragma warning(pop)
 #include "tier0/minidump.h"
 #include "tools_minidump.h"
 
@@ -27,7 +24,7 @@ static LONG __stdcall ToolsExceptionFilter( struct _EXCEPTION_POINTERS *Exceptio
 	int iType = MiniDumpNormal;
 	if ( g_bToolsWriteFullMinidumps )
 		iType = MiniDumpWithDataSegs | MiniDumpWithIndirectlyReferencedMemory;
-
+		
 	WriteMiniDumpUsingExceptionInfo( ExceptionInfo->ExceptionRecord->ExceptionCode, ExceptionInfo, (MINIDUMP_TYPE)iType );
 	return EXCEPTION_CONTINUE_SEARCH;
 }
